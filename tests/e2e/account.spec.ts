@@ -1,31 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-
-const MAILPIT = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
-
-async function signInLink(email: string): Promise<string> {
-  for (let i = 0; i < 30; i++) {
-    const res = await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`);
-    const { messages } = (await res.json()) as { messages: { ID: string }[] };
-    if (messages?.length) {
-      const msg = (await (await fetch(`${MAILPIT}/api/v1/message/${messages[0].ID}`)).json()) as { HTML: string };
-      const href = msg.HTML.match(/href="([^"]*token_hash=[^"]*)"/)?.[1];
-      if (href) return href.replaceAll("&amp;", "&");
-    }
-    await new Promise((r) => setTimeout(r, 500));
-  }
-  throw new Error(`No sign-in email for ${email}`);
-}
-
-async function signUp(page: Page, email: string) {
-  await page.goto("/signup");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("I am 18 years old or older.").check();
-  await page.getByLabel(/I agree to the/).check();
-  await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
-  const link = new URL(await signInLink(email));
-  await page.goto(link.pathname + link.search);
-}
+import { expect, test } from "@playwright/test";
+import { signUp } from "./helpers";
 
 test.describe.configure({ mode: "serial" });
 

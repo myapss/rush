@@ -8,6 +8,7 @@ const PATHS = [
   "/tdee-calculator",
   "/protein-calculator",
   "/bmi-calculator",
+  "/food-database",
   "/pricing",
   "/about",
   "/contact",

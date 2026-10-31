@@ -48,9 +48,9 @@ export const ACTIVITY_OPTIONS: { value: Enums["activity_level"]; label: string }
 ];
 
 export const CUISINES = [
-  "American", "British", "Nigerian", "West African", "Indian", "Mexican", "Italian",
+  "American", "British", "Nigerian", "West African", "East African", "Indian", "Mexican", "Italian",
   "Mediterranean", "Middle Eastern", "Japanese", "Chinese", "Korean", "Thai",
-  "Vietnamese", "Brazilian", "Caribbean", "Ethiopian", "French", "Spanish",
+  "Vietnamese", "Brazilian", "Caribbean", "Ethiopian", "French", "Spanish", "Greek", "Moroccan",
 ] as const;
 
 /** Common currencies; any ISO 4217 code is accepted by the database. */

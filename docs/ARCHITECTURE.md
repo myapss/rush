@@ -1,6 +1,6 @@
 # NutriPlan AI: Architecture Proposal (Draft for Approval)
 
-Status: **approved**. Phase 1 (Foundation) is built; see the README for current status.
+Status: **approved**. Phases 1 and 2 are built; the USDA import is pending. See the README for current status.
 
 ## 0. What's in the repository now
 
@@ -127,20 +127,20 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 ## 4. Phased checklist
 
 **Phase 1: Foundation**
-- [ ] Scaffold Next.js + TS (strict) + Tailwind + ESLint + Vitest + Playwright; `.env.example`; CI workflow
-- [ ] Port calculator to `lib/nutrition` with unit tests (Mifflin-St Jeor, documented in `docs/calculations.md`)
-- [ ] Supabase local setup, migrations for all tables, RLS, pgTAP tests
-- [ ] Auth (email magic link + Google OAuth), 18+ gate, consent capture
-- [ ] Onboarding and preference management
-- [ ] Public site shell: homepage, legal pages (drafts marked "needs legal review"), sitemap, robots
+- [x] Scaffold Next.js + TS (strict) + Tailwind + ESLint + Vitest + Playwright; `.env.example`; CI workflow
+- [x] Port calculator to `lib/nutrition` with unit tests (Mifflin-St Jeor, documented in `docs/calculations.md`)
+- [x] Supabase local setup, migrations for all tables, RLS, pgTAP tests
+- [x] Auth (email magic link + Google OAuth), 18+ gate, consent capture
+- [x] Onboarding and preference management
+- [x] Public site shell: homepage, legal pages (drafts marked "needs legal review"), sitemap, robots
 
 **Phase 2: Core product**
-- [ ] FDC import script (Foundation + SR Legacy), food search page
-- [ ] Curated recipe library v1 (target ~120 recipes across launch cuisines, ingredients mapped to FDC)
-- [ ] Planner: candidates → AI → validate → compute → save, plus fallback planner; tests with fixture model responses
-- [ ] Meal and ingredient substitution
-- [ ] Grocery list: merge, sum, categorize, check off, edit, scale, print/share
-- [ ] Dashboard, saved plans, progress tracker with charts and edit/delete
+- [x] FDC import script (SR Legacy), food search page (**real import pending**: USDA domain blocked in the build environment)
+- [x] Curated recipe library v1 (~55 recipes; grow toward ~120)
+- [x] Planner: candidates → AI → validate → compute → save, plus fallback planner; tests with fixture model responses
+- [x] Meal and ingredient substitution
+- [x] Grocery list: merge, sum, categorize, check off, edit, scale, print/share
+- [x] Dashboard, saved plans, progress tracker with charts and edit/delete
 
 **Phase 3: Monetization**
 - [ ] Billing provider integration, verified + idempotent webhooks

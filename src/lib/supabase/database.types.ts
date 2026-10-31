@@ -1,4 +1,10 @@
-export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
 
 export type Database = {
   graphql_public: {
@@ -10,7 +16,12 @@ export type Database = {
     };
     Functions: {
       graphql: {
-        Args: { extensions?: Json; operationName?: string; query?: string; variables?: Json };
+        Args: {
+          extensions?: Json;
+          operationName?: string;
+          query?: string;
+          variables?: Json;
+        };
         Returns: Json;
       };
     };
@@ -96,6 +107,7 @@ export type Database = {
           category: string;
           created_at: string;
           dietary_pattern: Database["public"]["Enums"]["dietary_pattern"];
+          display_name: string | null;
           extra_nutrients: NonNullable<Json>;
           fat_g: number;
           fdc_id: number | null;
@@ -107,6 +119,7 @@ export type Database = {
           protein_g: number;
           restrictions: Database["public"]["Enums"]["food_restriction"][];
           sat_fat_g: number | null;
+          slug: string | null;
           sodium_mg: number | null;
           source_name: string;
           source_reference: string;
@@ -122,6 +135,7 @@ export type Database = {
           category: string;
           created_at?: string;
           dietary_pattern: Database["public"]["Enums"]["dietary_pattern"];
+          display_name?: string | null;
           extra_nutrients?: NonNullable<Json>;
           fat_g: number;
           fdc_id?: number | null;
@@ -133,6 +147,7 @@ export type Database = {
           protein_g: number;
           restrictions?: Database["public"]["Enums"]["food_restriction"][];
           sat_fat_g?: number | null;
+          slug?: string | null;
           sodium_mg?: number | null;
           source_name: string;
           source_reference: string;
@@ -147,6 +162,7 @@ export type Database = {
           category?: string;
           created_at?: string;
           dietary_pattern?: Database["public"]["Enums"]["dietary_pattern"];
+          display_name?: string | null;
           extra_nutrients?: NonNullable<Json>;
           fat_g?: number;
           fdc_id?: number | null;
@@ -158,6 +174,7 @@ export type Database = {
           protein_g?: number;
           restrictions?: Database["public"]["Enums"]["food_restriction"][];
           sat_fat_g?: number | null;
+          slug?: string | null;
           sodium_mg?: number | null;
           source_name?: string;
           source_reference?: string;
@@ -207,6 +224,7 @@ export type Database = {
         Row: {
           category: string;
           checked: boolean;
+          food_item_id: number | null;
           grocery_list_id: string;
           id: string;
           name: string;
@@ -219,6 +237,7 @@ export type Database = {
         Insert: {
           category?: string;
           checked?: boolean;
+          food_item_id?: number | null;
           grocery_list_id: string;
           id?: string;
           name: string;
@@ -230,6 +249,7 @@ export type Database = {
         Update: {
           category?: string;
           checked?: boolean;
+          food_item_id?: number | null;
           grocery_list_id?: string;
           id?: string;
           name?: string;
@@ -239,6 +259,13 @@ export type Database = {
           unit?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "grocery_items_food_item_id_fkey";
+            columns: ["food_item_id"];
+            isOneToOne: false;
+            referencedRelation: "food_items";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "grocery_items_grocery_list_id_fkey";
             columns: ["grocery_list_id"];
@@ -251,6 +278,7 @@ export type Database = {
       grocery_lists: {
         Row: {
           created_at: string;
+          household_size: number;
           id: string;
           meal_plan_id: string | null;
           title: string;
@@ -260,6 +288,7 @@ export type Database = {
         ComputedFields: never;
         Insert: {
           created_at?: string;
+          household_size?: number;
           id?: string;
           meal_plan_id?: string | null;
           title: string;
@@ -268,6 +297,7 @@ export type Database = {
         };
         Update: {
           created_at?: string;
+          household_size?: number;
           id?: string;
           meal_plan_id?: string | null;
           title?: string;
@@ -286,43 +316,60 @@ export type Database = {
       };
       meal_plans: {
         Row: {
+          ai_event_id: number | null;
           created_at: string;
           end_date: string;
+          generator: string;
           goal: Database["public"]["Enums"]["goal"];
           id: string;
           start_date: string;
           status: Database["public"]["Enums"]["plan_status"];
           target_kcal: number | null;
+          targets_snapshot: NonNullable<Json>;
           title: string;
           updated_at: string;
           user_id: string;
         };
         ComputedFields: never;
         Insert: {
+          ai_event_id?: number | null;
           created_at?: string;
           end_date: string;
+          generator?: string;
           goal: Database["public"]["Enums"]["goal"];
           id?: string;
           start_date: string;
           status?: Database["public"]["Enums"]["plan_status"];
           target_kcal?: number | null;
+          targets_snapshot?: NonNullable<Json>;
           title: string;
           updated_at?: string;
           user_id: string;
         };
         Update: {
+          ai_event_id?: number | null;
           created_at?: string;
           end_date?: string;
+          generator?: string;
           goal?: Database["public"]["Enums"]["goal"];
           id?: string;
           start_date?: string;
           status?: Database["public"]["Enums"]["plan_status"];
           target_kcal?: number | null;
+          targets_snapshot?: NonNullable<Json>;
           title?: string;
           updated_at?: string;
           user_id?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "meal_plans_ai_event_id_fkey";
+            columns: ["ai_event_id"];
+            isOneToOne: false;
+            referencedRelation: "ai_events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       plan_limits: {
         Row: {
@@ -354,6 +401,7 @@ export type Database = {
           recipe_id: string | null;
           recipe_title: string;
           servings: number;
+          slot: number;
         };
         ComputedFields: never;
         Insert: {
@@ -366,6 +414,7 @@ export type Database = {
           recipe_id?: string | null;
           recipe_title: string;
           servings: number;
+          slot?: number;
         };
         Update: {
           date?: string;
@@ -377,6 +426,7 @@ export type Database = {
           recipe_id?: string | null;
           recipe_title?: string;
           servings?: number;
+          slot?: number;
         };
         Relationships: [
           {
@@ -631,6 +681,33 @@ export type Database = {
         };
         Relationships: [];
       };
+      saved_recipes: {
+        Row: {
+          created_at: string;
+          recipe_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          recipe_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          recipe_id?: string;
+          user_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "saved_recipes_recipe_id_fkey";
+            columns: ["recipe_id"];
+            isOneToOne: false;
+            referencedRelation: "recipes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       subscriptions: {
         Row: {
           cancel_at_period_end: boolean;
@@ -757,7 +834,10 @@ export type Database = {
         Args: { p_feature: Database["public"]["Enums"]["ai_feature"] };
         Returns: number;
       };
-      has_health_consent: { Args: Record<PropertyKey, never>; Returns: boolean };
+      has_health_consent: {
+        Args: Record<PropertyKey, never>;
+        Returns: boolean;
+      };
       is_premium: { Args: { uid: string }; Returns: boolean };
       quota_status: {
         Args: { p_feature: Database["public"]["Enums"]["ai_feature"] };
@@ -774,7 +854,8 @@ export type Database = {
       };
     };
     Enums: {
-      activity_level: "sedentary" | "light" | "moderate" | "very_active" | "athlete";
+      activity_level:
+        "sedentary" | "light" | "moderate" | "very_active" | "athlete";
       ai_event_status: "pending" | "ok" | "fallback" | "invalid" | "error";
       ai_feature: "meal_plan" | "recipe" | "substitution";
       allergen:
@@ -819,7 +900,10 @@ export type Database = {
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">;
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">];
+type DefaultSchema = DatabaseWithoutInternals[Extract<
+  keyof Database,
+  "public"
+>];
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
@@ -831,15 +915,19 @@ export type Tables<
     ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
         DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
       DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R;
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    ? (DefaultSchema["Tables"] & DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R;
       }
       ? R
@@ -848,14 +936,15 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I;
     }
@@ -871,14 +960,15 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema["Tables"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Tables"] | { schema: keyof DatabaseWithoutInternals },
   TableName extends (DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never) = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U;
     }
@@ -894,14 +984,15 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema["Enums"]
-    | { schema: keyof DatabaseWithoutInternals },
+    keyof DefaultSchema["Enums"] | { schema: keyof DatabaseWithoutInternals },
   EnumName extends (DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals;
   }
     ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never) = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
@@ -916,7 +1007,9 @@ export type CompositeTypes<
   }
     ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never) = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof DatabaseWithoutInternals }
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals;
+}
   ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
@@ -928,7 +1021,13 @@ export const Constants = {
   },
   public: {
     Enums: {
-      activity_level: ["sedentary", "light", "moderate", "very_active", "athlete"],
+      activity_level: [
+        "sedentary",
+        "light",
+        "moderate",
+        "very_active",
+        "athlete",
+      ],
       ai_event_status: ["pending", "ok", "fallback", "invalid", "error"],
       ai_feature: ["meal_plan", "recipe", "substitution"],
       allergen: [
@@ -958,7 +1057,14 @@ export const Constants = {
       recipe_origin: ["curated", "ai_generated", "user"],
       recipe_visibility: ["public", "private"],
       sex_for_calc: ["female", "male", "unspecified"],
-      subscription_status: ["trialing", "active", "past_due", "paused", "canceled", "incomplete"],
+      subscription_status: [
+        "trialing",
+        "active",
+        "past_due",
+        "paused",
+        "canceled",
+        "incomplete",
+      ],
     },
   },
 } as const;

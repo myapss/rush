@@ -1,7 +1,7 @@
 -- Row Level Security tests. Run with: npm run test:db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(45);
+select plan(50);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres, bypassing RLS)
@@ -148,6 +148,27 @@ select throws_ok($$insert into public.progress_entries (user_id, entry_date, wei
   '42501', null, 'B: cannot log progress without consent');
 select is((select tier from public.quota_status('meal_plan')), 'premium', 'B: premium tier detected');
 select ok(public.consume_quota('meal_plan') is not null, 'B: premium meal plan allowed');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Phase 2: saved recipes and one active plan per user
+-- ---------------------------------------------------------------------------
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated"}';
+select lives_ok($$insert into public.saved_recipes (user_id, recipe_id) values ('11111111-1111-1111-1111-111111111111', 'cccccccc-0000-0000-0000-000000000001')$$,
+  'A: can save a public recipe');
+select throws_ok($$insert into public.saved_recipes (user_id, recipe_id) values ('11111111-1111-1111-1111-111111111111', 'bbbbbbbb-0000-0000-0000-000000000003')$$,
+  '42501', null, 'A: cannot save B private recipe');
+select throws_ok($$insert into public.saved_recipes (user_id, recipe_id) values ('22222222-2222-2222-2222-222222222222', 'cccccccc-0000-0000-0000-000000000001')$$,
+  '42501', null, 'A: cannot save recipes for B');
+update public.meal_plans set status = 'active' where id = 'aaaaaaaa-0000-0000-0000-000000000001';
+select throws_ok($$insert into public.meal_plans (user_id, title, goal, start_date, end_date, status)
+  values ('11111111-1111-1111-1111-111111111111', 'Second', 'maintain', '2026-11-09', '2026-11-15', 'active')$$,
+  '23505', null, 'A: only one active plan at a time');
+reset role;
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "22222222-2222-2222-2222-222222222222", "role": "authenticated"}';
+select is((select count(*)::int from public.saved_recipes), 0, 'B: cannot see A saved recipes');
 reset role;
 
 -- ---------------------------------------------------------------------------

@@ -8,6 +8,7 @@ const GROUPS = [
       { href: "/tdee-calculator", label: "TDEE calculator" },
       { href: "/protein-calculator", label: "Protein calculator" },
       { href: "/bmi-calculator", label: "BMI calculator" },
+      { href: "/food-database", label: "Food database" },
     ],
   },
   {

@@ -1,0 +1,4 @@
+fdc_id,data_type,description,food_category_id,publication_date
+9000001,sr_legacy_food,"TEST FIXTURE oats, dry",8,2019-04-01
+9000002,sr_legacy_food,"TEST FIXTURE milk, ""whole""",1,2019-04-01
+9000003,sr_legacy_food,TEST FIXTURE unrelated,1,2019-04-01

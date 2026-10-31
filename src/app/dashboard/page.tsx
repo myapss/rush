@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
+import { GeneratePlanButton } from "@/components/plan-buttons";
 import { requireUser } from "@/lib/auth";
+import { getPlan, sumNutrition } from "@/lib/data/plans";
 import { getProfileAndPreferences } from "@/lib/data/profile";
 import { NOT_APPLICABLE_MESSAGE, NOTE_MESSAGE } from "@/lib/nutrition/messages";
 import { computeTargets } from "@/lib/nutrition/targets";
@@ -28,7 +30,13 @@ async function Overview() {
   if (!profile.onboarding_completed_at || !preferences) redirect("/onboarding");
 
   const supabase = await createClient();
-  const { data: quota } = await supabase.rpc("quota_status", { p_feature: "meal_plan" }).maybeSingle();
+  const [{ data: quota }, plan] = await Promise.all([
+    supabase.rpc("quota_status", { p_feature: "meal_plan" }).maybeSingle(),
+    getPlan(user.id),
+  ]);
+  const today = new Date().toISOString().slice(0, 10);
+  const todays = plan?.days.get(today) ?? [];
+  const todayTotals = sumNutrition(todays);
 
   const age = profile.birth_year ? new Date().getUTCFullYear() - profile.birth_year : null;
   const targets =
@@ -97,13 +105,51 @@ async function Overview() {
       </section>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <section aria-labelledby="plan-h" className="card">
-          <h2 id="plan-h" className="mb-2 text-lg font-bold">
-            Meal plans
+        <section aria-labelledby="plan-h" className="card grid content-start gap-3">
+          <h2 id="plan-h" className="text-lg font-bold">
+            Today&apos;s meals
           </h2>
-          <p className="mb-3 text-muted">
-            The AI meal planner is being built. Your preferences are saved, so your first plan will use them automatically.
-          </p>
+          {todays.length > 0 ? (
+            <>
+              <ul className="grid gap-1.5">
+                {todays.map((m) => (
+                  <li key={m.id} className="flex justify-between gap-3 text-sm">
+                    <span>
+                      <span className="mr-2 text-xs font-bold uppercase text-brand">{m.meal_type}</span>
+                      {m.recipe_id ? (
+                        <Link href={`/dashboard/recipes/${m.recipe_id}?servings=${m.servings}`} className="hover:underline">
+                          {m.recipe_title}
+                        </Link>
+                      ) : (
+                        m.recipe_title
+                      )}
+                    </span>
+                    <span className="whitespace-nowrap text-muted">{Math.round(m.nutrition_snapshot.kcal ?? 0)} kcal</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="border-t border-border pt-2 text-sm text-muted">
+                Today: <strong className="text-fg">{Math.round(todayTotals.kcal).toLocaleString("en")} kcal</strong> · P{" "}
+                {Math.round(todayTotals.protein)} g · C {Math.round(todayTotals.carbs)} g · F {Math.round(todayTotals.fat)} g
+              </p>
+              <Link href="/dashboard/my-meals" className="btn w-fit">
+                See the whole week
+              </Link>
+            </>
+          ) : plan ? (
+            <p className="text-muted">
+              Your current plan doesn&apos;t cover today.{" "}
+              <Link href="/dashboard/my-meals" className="font-semibold text-brand underline">
+                Create a new plan
+              </Link>
+              .
+            </p>
+          ) : (
+            <>
+              <p className="text-muted">Get a 7-day plan built around your preferences and targets.</p>
+              <GeneratePlanButton />
+            </>
+          )}
           {quota && (
             <p className="text-sm text-muted">
               {quota.tier === "premium" ? "Premium" : "Free"} plan: {quota.used} of {quota.monthly_limit} meal plans used this
