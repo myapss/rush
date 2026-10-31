@@ -1,6 +1,6 @@
 # NutriPlan AI: Architecture Proposal (Draft for Approval)
 
-Status: **approved**. Phases 1–4 are built. Remaining launch work (accounts, data import, legal review) is tracked in `docs/LAUNCH_CHECKLIST.md`.
+Status: **approved**. All five phases are built. Remaining launch work (accounts, data import, legal and dietitian review) is tracked in `docs/LAUNCH_CHECKLIST.md`.
 
 ## 0. What's in the repository now
 
@@ -153,7 +153,9 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 - [x] Accessibility (axe) + mobile E2E; Sentry; GA4 behind opt-in consent; data export/delete flows; retention job
 
 **Phase 5: Growth**
-- [ ] SEO landing pages with original reviewed content, metrics dashboard, additional locales/data sources on demand
+- [x] SEO landing pages (9 + hub) and 64 recipe pages with original content; owner metrics report (`npm run metrics`)
+- [ ] Additional languages and regional food-composition sources, driven by real demand (not started; the app is English-only and copy isn't yet in message files)
+- [ ] AI recipe generator from the original blueprint (not started; the ingredient-based recipe finder covers part of the need)
 
 ## 5. Accounts and credentials needed (when the phase needs them, not now)
 

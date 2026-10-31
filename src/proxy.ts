@@ -1,7 +1,12 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { isUnknownContentPath } from "@/lib/known-paths";
 import { updateSession } from "@/lib/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
+  if (isUnknownContentPath(request.nextUrl.pathname)) {
+    // Render the not-found page with a real 404 status.
+    return NextResponse.rewrite(new URL("/_not-found-content", request.url), { status: 404 });
+  }
   return updateSession(request);
 }
 

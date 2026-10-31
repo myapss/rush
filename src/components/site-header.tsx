@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 const NAV = [
+  { href: "/meal-plans", label: "Meal plans" },
+  { href: "/recipes", label: "Recipes" },
   { href: "/calorie-calculator", label: "Calorie calculator" },
-  { href: "/protein-calculator", label: "Protein" },
-  { href: "/bmi-calculator", label: "BMI" },
   { href: "/pricing", label: "Pricing" },
 ];
 

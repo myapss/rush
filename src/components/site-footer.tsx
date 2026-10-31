@@ -10,6 +10,18 @@ const GROUPS = [
       { href: "/protein-calculator", label: "Protein calculator" },
       { href: "/bmi-calculator", label: "BMI calculator" },
       { href: "/food-database", label: "Food database" },
+      { href: "/recipes", label: "Recipes" },
+    ],
+  },
+  {
+    title: "Meal plans",
+    links: [
+      { href: "/meal-plans/weight-loss", label: "Weight loss" },
+      { href: "/meal-plans/high-protein", label: "High protein" },
+      { href: "/meal-plans/vegetarian", label: "Vegetarian" },
+      { href: "/meal-plans/vegan", label: "Vegan" },
+      { href: "/meal-plans/nigerian", label: "Nigerian" },
+      { href: "/meal-plans", label: "All meal plans" },
     ],
   },
   {
@@ -33,7 +45,7 @@ const GROUPS = [
 export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-border bg-surface">
-      <div className="container-page grid gap-8 py-10 sm:grid-cols-[2fr_1fr_1fr_1fr]">
+      <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
         <div className="max-w-sm text-sm text-muted">
           <p className="mb-2 font-bold text-fg">NutriPlan AI</p>
           <p>

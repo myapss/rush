@@ -18,7 +18,8 @@
     "check": "npm run lint && npm run typecheck && npm test",
     "db:types": "supabase gen types typescript --local > .types.tmp && mv .types.tmp src/lib/supabase/database.types.ts && prettier --write --log-level warn src/lib/supabase/database.types.ts",
     "import:foods": "tsx --env-file=.env.local scripts/import-fdc.ts",
-    "import:recipes": "tsx --env-file=.env.local scripts/import-recipes.ts"
+    "import:recipes": "tsx --env-file=.env.local scripts/import-recipes.ts",
+    "metrics": "tsx --env-file=.env.local scripts/metrics.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^1.3.0",

@@ -851,7 +851,9 @@ export type Database = {
         Returns: boolean;
       };
       is_premium: { Args: { uid: string }; Returns: boolean };
+      metrics_summary: { Args: { p_days?: number }; Returns: Json };
       my_tier: { Args: Record<PropertyKey, never>; Returns: string };
+      prune_old_data: { Args: Record<PropertyKey, never>; Returns: undefined };
       quota_status: {
         Args: { p_feature: Database["public"]["Enums"]["ai_feature"] };
         Returns: {

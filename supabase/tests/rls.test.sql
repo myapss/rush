@@ -1,7 +1,7 @@
 -- Row Level Security tests. Run with: npm run test:db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(59);
+select plan(61);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres, bypassing RLS)
@@ -200,6 +200,12 @@ select is((select array_agg(id order by id) from public.billing_events where id 
 select is((select count(*)::int from public.rate_limits where key = 'old'), 0, 'old rate-limit windows are pruned');
 set local role authenticated;
 select throws_ok($$select public.prune_old_data()$$, '42501', null, 'users cannot run the retention job');
+reset role;
+
+-- Phase 5: owner metrics are aggregate-only and not callable by users.
+select ok(public.metrics_summary(30) ? 'funnel', 'metrics summary returns the funnel');
+set local role authenticated;
+select throws_ok($$select public.metrics_summary(30)$$, '42501', null, 'users cannot read business metrics');
 reset role;
 
 -- ---------------------------------------------------------------------------

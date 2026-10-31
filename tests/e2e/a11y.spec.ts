@@ -9,7 +9,7 @@ async function seriousViolations(page: Page) {
     .map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`);
 }
 
-for (const path of ["/tdee-calculator", "/protein-calculator", "/bmi-calculator", "/food-database", "/privacy", "/login"]) {
+for (const path of ["/tdee-calculator", "/protein-calculator", "/bmi-calculator", "/food-database", "/privacy", "/login", "/meal-plans", "/meal-plans/high-protein", "/recipes", "/recipes/moi-moi"]) {
   test(`no serious accessibility violations on ${path}`, async ({ page }) => {
     await page.goto(path);
     expect(await seriousViolations(page)).toEqual([]);

@@ -54,4 +54,7 @@ Work through this before taking real users and payments. ✅ = done in the codeb
 ## 6. Growth basics
 - ☐ Verify the domain in Google Search Console and submit `/sitemap.xml`
 - ☐ Measure activation (signup → onboarding → first plan) and free→paid conversion; the `ai_events` and `subscriptions` tables have what you need
-- ☐ Write the first SEO pages (Phase 5), one at a time, each with real, reviewed content
+- ✅ Meal-plan landing pages (weight loss, high protein, vegetarian, vegan, budget, Mediterranean, Nigerian, Indian, American) and 64 recipe pages
+- ☐ Dietitian review of the landing-page guidance (`src/content/meal-plans.ts`) before promoting it
+- ☐ Run `npm run metrics` weekly; watch onboarding completion, first-plan rate, free→paid, churn and AI cost per plan
+- ☐ Add new pages only for real search demand (check Search Console queries), one at a time

@@ -10,14 +10,14 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 
 ## Status
 
-**Phases 1–4 (Foundation, Core product, Monetization, Quality & launch prep) are built.** See [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md) for what's left before launch. The real food data still has to be imported, and Paddle needs to be configured (see below).
+**All five phases of the blueprint are built** (Foundation, Core product, Monetization, Quality & launch prep, Growth). See [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md) for what's left before launch. The real food data still has to be imported, and Paddle needs to be configured (see below).
 
 | Area | State |
 |---|---|
 | Public site, calculators, food database page, legal drafts, sitemap | ✅ |
 | Database schema, RLS, quotas, rate limits | ✅ |
 | Auth, 18+ gate, onboarding, health-data consent, export, deletion | ✅ |
-| Curated foods (~110) and recipe library (~55 recipes, 20+ cuisines) | ✅ written, **import pending** |
+| Curated foods (115) and recipe library (64 recipes, 23 cuisines) | ✅ written, **import pending** |
 | USDA import scripts | ✅ (unit-tested; real import not yet run) |
 | 7-day planner: AI (Claude) with validation, plus a rules fallback | ✅ |
 | Meal swaps, grocery list (combine, group, tick, add, edit, delete, scale, print) | ✅ |
@@ -28,6 +28,8 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 | Error monitoring (Sentry, PII-scrubbed), error pages, `/api/health` | ✅ (needs your Sentry DSN) |
 | GA4 analytics behind an opt-in cookie banner, public pages only | ✅ (needs your GA ID) |
 | Accessibility checks on all pages; recipe-library safety tests; daily data-retention job | ✅ |
+| SEO: 9 meal-plan landing pages + hub, 64 public recipe pages, breadcrumbs data, sitemap, real 404s | ✅ (content needs dietitian review) |
+| Owner metrics: `npm run metrics` (funnel, conversion, MRR, churn, AI cost) | ✅ |
 
 Legal pages are **drafts** and must be reviewed by a lawyer before launch. Recipes are **not yet reviewed by a dietitian**, and the app says so.
 
@@ -61,6 +63,13 @@ How it's secured:
 - Subscription state is written **only** by `/api/webhooks/paddle`, after verifying Paddle's HMAC signature with a 5-second replay window. Each event is processed once (`billing_events`), and older, out-of-order events are ignored.
 - The "payment complete" message in the browser is only a hint; the billing page waits for the webhook before showing Premium.
 - Deleting an account cancels any live subscription with Paddle first, and refuses to delete if that fails.
+
+## Content and SEO
+
+- **Meal-plan pages** (`/meal-plans/*`) are written in `src/content/meal-plans.ts`. Each page has its own guidance and an example week built from the recipe library under the page's rules. `tests/unit/meal-plan-pages.test.ts` checks that every week matches what its page says (for example, the vegan week is entirely vegan, and the Indian week has exactly one meat dish).
+- **Recipe pages** (`/recipes/*`) are generated from `data/recipes.ts`; nutrition appears once the USDA import has run (cached for an hour).
+- To add a page: add an entry to `MEAL_PLAN_PAGES`, give it original, reviewed content, and run `npm test`. Avoid near-duplicate pages; each one should answer a different question.
+- Only `BreadcrumbList` structured data is used. FAQ and Recipe rich results aren't eligible (FAQ results are limited to authoritative health sites, and Recipe results need photos), so we don't claim them.
 
 ## How meal planning works
 
@@ -103,6 +112,7 @@ Sign-in emails are captured locally by **Mailpit** at http://127.0.0.1:54324. Op
 | `npm run db:reset` | Recreate the local database from migrations |
 | `npm run db:types` | Regenerate `src/lib/supabase/database.types.ts` after schema changes |
 | `npm run import:foods -- <dir>` / `npm run import:recipes` | Import USDA food data and the curated recipes |
+| `npm run metrics [-- days]` | Business metrics report (aggregate counts only; point `.env.local` at production to run it there) |
 
 ### Database changes
 
