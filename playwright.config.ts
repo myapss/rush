@@ -18,5 +18,14 @@ export default defineConfig({
     port,
     timeout: 300_000,
     reuseExistingServer: !process.env.CI,
+    // Test-only Paddle settings: webhooks are signed by the tests themselves.
+    env: {
+      PADDLE_API_KEY: "test_e2e_dummy_key",
+      PADDLE_WEBHOOK_SECRET: "pdl_ntfset_e2e_secret",
+      PADDLE_ENVIRONMENT: "sandbox",
+      PADDLE_PRICE_MONTHLY_ID: "pri_test_monthly",
+      PADDLE_PRICE_YEARLY_ID: "pri_test_yearly",
+      NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: "test_e2e_client_token",
+    },
   },
 });

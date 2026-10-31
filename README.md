@@ -9,7 +9,7 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 
 ## Status
 
-**Phase 1 (Foundation) and Phase 2 (Core product) are built.** The real food data still has to be imported (see below).
+**Phases 1–3 (Foundation, Core product, Monetization) are built.** The real food data still has to be imported, and Paddle needs to be configured (see below).
 
 | Area | State |
 |---|---|
@@ -22,7 +22,8 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 | Meal swaps, grocery list (combine, group, tick, add, edit, delete, scale, print) | ✅ |
 | Recipe browser, "ingredients I have" finder, saved recipes, recipe detail | ✅ |
 | Progress tracker (weight, waist, adherence, notes, trend chart) | ✅ |
-| Payments and premium entitlements | Phase 3 |
+| Paddle subscriptions: checkout, verified webhooks, cancel/resume, billing portal, usage display | ✅ (tested with signed test webhooks; needs your Paddle account) |
+| Free/Premium limits enforced in Postgres | ✅ |
 | Analytics, error monitoring, launch checks | Phase 4 |
 
 Legal pages are **drafts** and must be reviewed by a lawyer before launch. Recipes are **not yet reviewed by a dietitian**, and the app says so.
@@ -40,6 +41,23 @@ Nutrition values come only from **USDA FoodData Central (SR Legacy)**. Nothing i
 3. `import:foods` matches each food in `data/foods.ts` by its exact USDA description. If any description doesn't match, it lists the closest USDA names and writes nothing; fix `data/foods.ts` and re-run. `import:recipes` then checks every recipe's calories per serving and flags anything implausible.
 
 Run the same commands against your hosted Supabase project (point `.env.local` at it) before launch.
+
+## Setting up payments (Paddle)
+
+Paddle is the merchant of record: it charges customers in their local currency, handles VAT and sales tax worldwide, and pays out to the business. It accepts sellers based in Nigeria.
+
+1. Create a **sandbox** account at https://sandbox-vendors.paddle.com.
+2. **Catalog → Products:** create "NutriPlan Premium" with two recurring prices: $9.99 monthly and $59.99 yearly. Copy the `pri_…` IDs into `PADDLE_PRICE_MONTHLY_ID` and `PADDLE_PRICE_YEARLY_ID`.
+3. **Developer tools → Authentication:** create an API key (`PADDLE_API_KEY`) and a client-side token (`NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`).
+4. **Developer tools → Notifications:** add a destination `https://<your-domain>/api/webhooks/paddle` subscribed to all `subscription.*` events. Copy its secret into `PADDLE_WEBHOOK_SECRET`.
+5. **Checkout → Checkout settings:** set the default payment link to `https://<your-domain>/dashboard/billing`.
+6. Test with Paddle's test cards in sandbox. Then complete Paddle's seller verification (business details, website review including pricing, terms, privacy and refund policy pages), switch to production values and set `PADDLE_ENVIRONMENT=production`.
+
+How it's secured:
+- The checkout transaction is created **on the server** with the user's ID attached, so the browser can't assign a subscription to someone else.
+- Subscription state is written **only** by `/api/webhooks/paddle`, after verifying Paddle's HMAC signature with a 5-second replay window. Each event is processed once (`billing_events`), and older, out-of-order events are ignored.
+- The "payment complete" message in the browser is only a hint; the billing page waits for the webhook before showing Premium.
+- Deleting an account cancels any live subscription with Paddle first, and refuses to delete if that fails.
 
 ## How meal planning works
 

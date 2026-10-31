@@ -2,6 +2,9 @@
 
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
+import { billingConfig } from "@/lib/billing/config";
+import { paddleClient } from "@/lib/billing/paddle";
+import { getSubscriptionRow } from "@/lib/billing/sync";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { formDataToObject, onboardingSchema } from "@/lib/validation/onboarding";
@@ -72,6 +75,19 @@ export type DeleteState = { status: "idle" } | { status: "error"; message: strin
 export async function deleteAccount(_prev: DeleteState, fd: FormData): Promise<DeleteState> {
   const user = await requireUser("/dashboard/settings");
   if (fd.get("confirm") !== "DELETE") return { status: "error", message: 'Type DELETE to confirm.' };
+
+  // Stop billing before deleting: a deleted account must never be charged again.
+  const sub = await getSubscriptionRow(user.id);
+  if (sub && sub.status !== "canceled") {
+    const config = billingConfig();
+    if (!config) return { status: "error", message: "Please cancel your subscription before deleting your account." };
+    try {
+      await paddleClient(config).subscriptions.cancel(sub.provider_subscription_id, { effectiveFrom: "immediately" });
+    } catch (e) {
+      console.error("cancel before deletion failed", e);
+      return { status: "error", message: "We couldn't cancel your subscription, so your account wasn't deleted. Please try again or contact support." };
+    }
+  }
 
   // Removing the auth user cascades to every table holding the user's data.
   const { error } = await createAdminClient().auth.admin.deleteUser(user.id);

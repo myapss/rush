@@ -30,8 +30,8 @@ export default function SettingsPage() {
           Delete account
         </h2>
         <p className="text-muted">
-          This permanently deletes your account, preferences, plans and progress. It can&apos;t be undone. If you have a
-          subscription, cancel it first.
+          This permanently deletes your account, preferences, plans and progress. It can&apos;t be undone. An active
+          subscription is cancelled immediately and won&apos;t renew.
         </p>
         <DeleteAccount />
       </section>

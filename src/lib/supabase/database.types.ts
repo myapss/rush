@@ -78,6 +78,7 @@ export type Database = {
         Row: {
           id: string;
           payload: NonNullable<Json>;
+          processed_at: string | null;
           provider: Database["public"]["Enums"]["billing_provider"];
           received_at: string;
           type: string;
@@ -86,6 +87,7 @@ export type Database = {
         Insert: {
           id: string;
           payload: NonNullable<Json>;
+          processed_at?: string | null;
           provider: Database["public"]["Enums"]["billing_provider"];
           received_at?: string;
           type: string;
@@ -93,6 +95,7 @@ export type Database = {
         Update: {
           id?: string;
           payload?: NonNullable<Json>;
+          processed_at?: string | null;
           provider?: Database["public"]["Enums"]["billing_provider"];
           received_at?: string;
           type?: string;
@@ -712,9 +715,12 @@ export type Database = {
         Row: {
           cancel_at_period_end: boolean;
           created_at: string;
+          currency: string | null;
           current_period_end: string | null;
           id: string;
+          last_event_at: string | null;
           plan: Database["public"]["Enums"]["billing_plan"];
+          price_id: string | null;
           provider: Database["public"]["Enums"]["billing_provider"];
           provider_customer_id: string;
           provider_subscription_id: string;
@@ -726,9 +732,12 @@ export type Database = {
         Insert: {
           cancel_at_period_end?: boolean;
           created_at?: string;
+          currency?: string | null;
           current_period_end?: string | null;
           id?: string;
+          last_event_at?: string | null;
           plan: Database["public"]["Enums"]["billing_plan"];
+          price_id?: string | null;
           provider: Database["public"]["Enums"]["billing_provider"];
           provider_customer_id: string;
           provider_subscription_id: string;
@@ -739,9 +748,12 @@ export type Database = {
         Update: {
           cancel_at_period_end?: boolean;
           created_at?: string;
+          currency?: string | null;
           current_period_end?: string | null;
           id?: string;
+          last_event_at?: string | null;
           plan?: Database["public"]["Enums"]["billing_plan"];
+          price_id?: string | null;
           provider?: Database["public"]["Enums"]["billing_provider"];
           provider_customer_id?: string;
           provider_subscription_id?: string;
@@ -839,6 +851,7 @@ export type Database = {
         Returns: boolean;
       };
       is_premium: { Args: { uid: string }; Returns: boolean };
+      my_tier: { Args: Record<PropertyKey, never>; Returns: string };
       quota_status: {
         Args: { p_feature: Database["public"]["Enums"]["ai_feature"] };
         Returns: {

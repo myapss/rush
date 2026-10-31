@@ -17,9 +17,9 @@ const FEATURES = [
   { title: "Calorie & macro estimates", body: "Mifflin-St Jeor with clear explanations and guardrails.", ready: true },
   { title: "Allergy-safe by design", body: "Allergies and restrictions are filtered in code, then checked again before anything is shown.", ready: true },
   { title: "Your cuisine, your units", body: "Metric or imperial, local currency, and cuisines from Nigerian to Japanese.", ready: true },
-  { title: "AI 7-day meal plans", body: "Personalized plans where every nutrition number comes from a food database, not the AI.", ready: false },
-  { title: "Smart grocery lists", body: "Combined, grouped and scaled ingredient lists you can tick off and share.", ready: false },
-  { title: "Recipe ideas from your fridge", body: "Enter what you have and get recipe ideas with allergen warnings.", ready: false },
+  { title: "AI 7-day meal plans", body: "Personalized plans where every nutrition number comes from a food database, not the AI.", ready: true },
+  { title: "Smart grocery lists", body: "Combined, grouped and scaled ingredient lists you can tick off and print.", ready: true },
+  { title: "Recipe ideas from your fridge", body: "Enter what you have and find matching recipes, with allergen warnings.", ready: true },
 ];
 
 const FAQ = [
@@ -127,8 +127,7 @@ export default function HomePage() {
             Simple pricing
           </h2>
           <p className="mb-6 max-w-2xl text-muted">
-            Start free. Premium adds more meal plans, recipe generations and meal swaps. It will launch once the meal planner
-            is ready.
+            Start free with one meal plan a month. Premium adds more plans and meal swaps, and you can cancel any time.
           </p>
           <Link href="/pricing" className="btn">
             See plans

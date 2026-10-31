@@ -27,8 +27,10 @@ export default function TermsPage() {
       </p>
       <h2>Subscriptions</h2>
       <p>
-        Paid plans renew automatically until cancelled. You can cancel at any time from your account, and you keep Premium
-        access until the end of the period you paid for. Refund terms will be stated at checkout.
+        Our order process is conducted by our online reseller Paddle.com. Paddle.com is the Merchant of Record for all our
+        orders, handles payments, sales tax and VAT, and provides customer service for billing enquiries and returns. Paid
+        plans renew automatically until cancelled. You can cancel at any time from Plan &amp; billing in your account, and you
+        keep Premium access until the end of the period you paid for.
       </p>
       <h2>Acceptable use</h2>
       <p>Don&apos;t misuse the service, attempt to access other users&apos; data, or try to bypass usage limits.</p>

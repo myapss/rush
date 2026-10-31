@@ -1,6 +1,6 @@
 # NutriPlan AI: Architecture Proposal (Draft for Approval)
 
-Status: **approved**. Phases 1 and 2 are built; the USDA import is pending. See the README for current status.
+Status: **approved**. Phases 1–3 are built (payments via Paddle); the USDA import and Paddle account setup are pending. See the README for current status.
 
 ## 0. What's in the repository now
 
@@ -143,9 +143,9 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 - [x] Dashboard, saved plans, progress tracker with charts and edit/delete
 
 **Phase 3: Monetization**
-- [ ] Billing provider integration, verified + idempotent webhooks
-- [ ] Entitlements, `consume_quota`, usage display, billing/cancel page
-- [ ] Rate limits on auth, AI and public endpoints
+- [x] Billing provider integration, verified + idempotent webhooks
+- [x] Entitlements, `consume_quota`, usage display, billing/cancel page
+- [x] Rate limits on auth, AI, swaps, checkout and data export (public pages are static; the food-database search is not rate-limited yet, so add CDN/WAF limits at launch)
 
 **Phase 4: Quality and launch**
 - [ ] Allergy/restriction property tests (random profiles × plans must never violate)

@@ -1,7 +1,7 @@
 -- Row Level Security tests. Run with: npm run test:db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(50);
+select plan(56);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres, bypassing RLS)
@@ -169,6 +169,23 @@ reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "22222222-2222-2222-2222-222222222222", "role": "authenticated"}';
 select is((select count(*)::int from public.saved_recipes), 0, 'B: cannot see A saved recipes');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Phase 3: Premium entitlement rules
+-- ---------------------------------------------------------------------------
+select ok(public.is_premium('22222222-2222-2222-2222-222222222222'), 'active subscription is premium');
+update public.subscriptions set status = 'past_due' where user_id = '22222222-2222-2222-2222-222222222222';
+select ok(public.is_premium('22222222-2222-2222-2222-222222222222'), 'past_due keeps access while payment is retried');
+update public.subscriptions set status = 'paused' where user_id = '22222222-2222-2222-2222-222222222222';
+select ok(not public.is_premium('22222222-2222-2222-2222-222222222222'), 'paused is not premium');
+update public.subscriptions set status = 'canceled', current_period_end = now() + interval '3 days' where user_id = '22222222-2222-2222-2222-222222222222';
+select ok(public.is_premium('22222222-2222-2222-2222-222222222222'), 'canceled keeps access until the paid period ends');
+update public.subscriptions set current_period_end = now() - interval '1 minute' where user_id = '22222222-2222-2222-2222-222222222222';
+select ok(not public.is_premium('22222222-2222-2222-2222-222222222222'), 'access ends after the paid period');
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated"}';
+select is(public.my_tier(), 'free', 'A: my_tier reports free');
 reset role;
 
 -- ---------------------------------------------------------------------------
