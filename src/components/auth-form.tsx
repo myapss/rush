@@ -1,11 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { sendMagicLink, signInWithGoogle, type AuthFormState } from "@/lib/actions/auth";
+import { trackEvent } from "@/lib/consent";
 
 export function AuthForm({ mode, next, googleEnabled }: { mode: "login" | "signup"; next: string; googleEnabled: boolean }) {
   const [state, action, pending] = useActionState<AuthFormState, FormData>(sendMagicLink.bind(null, mode), { status: "idle" });
+
+  useEffect(() => {
+    if (state.status === "sent" && mode === "signup") trackEvent("sign_up", { method: "email" });
+  }, [state.status, mode]);
 
   if (state.status === "sent") {
     return (

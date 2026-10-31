@@ -1,6 +1,6 @@
 # NutriPlan AI: Architecture Proposal (Draft for Approval)
 
-Status: **approved**. Phases 1–3 are built (payments via Paddle); the USDA import and Paddle account setup are pending. See the README for current status.
+Status: **approved**. Phases 1–4 are built. Remaining launch work (accounts, data import, legal review) is tracked in `docs/LAUNCH_CHECKLIST.md`.
 
 ## 0. What's in the repository now
 
@@ -148,9 +148,9 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 - [x] Rate limits on auth, AI, swaps, checkout and data export (public pages are static; the food-database search is not rate-limited yet, so add CDN/WAF limits at launch)
 
 **Phase 4: Quality and launch**
-- [ ] Allergy/restriction property tests (random profiles × plans must never violate)
-- [ ] Payment lifecycle tests (success, failure, cancel, renew) against provider sandbox
-- [ ] Accessibility (axe) + mobile E2E; Sentry; GA4 with Consent Mode; data export/delete flows
+- [x] Allergy/restriction property tests (random profiles × plans must never violate; real-library coverage)
+- [x] Payment lifecycle tests with signed webhook fixtures (success, past-due, cancel, out-of-order, duplicates). ☐ Run once more against the real Paddle sandbox
+- [x] Accessibility (axe) + mobile E2E; Sentry; GA4 behind opt-in consent; data export/delete flows; retention job
 
 **Phase 5: Growth**
 - [ ] SEO landing pages with original reviewed content, metrics dashboard, additional locales/data sources on demand

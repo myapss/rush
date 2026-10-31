@@ -1,7 +1,7 @@
 -- Row Level Security tests. Run with: npm run test:db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(56);
+select plan(59);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres, bypassing RLS)
@@ -186,6 +186,20 @@ select ok(not public.is_premium('22222222-2222-2222-2222-222222222222'), 'access
 set local role authenticated;
 set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated"}';
 select is(public.my_tier(), 'free', 'A: my_tier reports free');
+reset role;
+
+-- ---------------------------------------------------------------------------
+-- Phase 4: retention
+-- ---------------------------------------------------------------------------
+insert into public.billing_events (id, provider, type, payload, received_at) values
+  ('evt_old', 'paddle', 'subscription.created', '{}', now() - interval '91 days'),
+  ('evt_new', 'paddle', 'subscription.created', '{}', now());
+insert into public.rate_limits (key, window_start, count) values ('old', now() - interval '2 days', 1);
+select public.prune_old_data();
+select is((select array_agg(id order by id) from public.billing_events where id in ('evt_old', 'evt_new')), array['evt_new'], 'old billing events are pruned, recent kept');
+select is((select count(*)::int from public.rate_limits where key = 'old'), 0, 'old rate-limit windows are pruned');
+set local role authenticated;
+select throws_ok($$select public.prune_old_data()$$, '42501', null, 'users cannot run the retention job');
 reset role;
 
 -- ---------------------------------------------------------------------------

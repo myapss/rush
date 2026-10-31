@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { bmi as calcBmi, bmiCategory, weightForBmi } from "@/lib/nutrition/bmi";
+import { trackEvent } from "@/lib/consent";
 import { NOT_APPLICABLE_MESSAGE, NOTE_MESSAGE } from "@/lib/nutrition/messages";
 import { computeTargets } from "@/lib/nutrition/targets";
 import type { ActivityLevel, Goal, Sex, TargetsResult } from "@/lib/nutrition/types";
@@ -75,6 +76,8 @@ export function Calculator({ mode }: { mode: CalculatorMode }) {
       flags: { pregnantOrBreastfeeding: form.pregnant },
     });
     setOutcome({ kind: "targets", result, heightCm, weightKg });
+    // Which calculator was used, never the values entered.
+    trackEvent("calculator_used", { calculator: mode });
   }
 
   const showActivity = mode !== "bmi";

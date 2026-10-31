@@ -104,7 +104,7 @@ async function Progress() {
         <p className="card text-muted">Add weight on at least two days to see your trend chart.</p>
       )}
       {entries && entries.length > 0 && (
-        <section aria-labelledby="history-h" className="card overflow-x-auto">
+        <section aria-labelledby="history-h" className="card overflow-x-auto" tabIndex={0}>
           <h2 id="history-h" className="mb-2 font-bold">
             History
           </h2>

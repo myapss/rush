@@ -73,7 +73,7 @@ async function Results({ searchParams }: { searchParams: PageProps<"/food-databa
   }
   const n = (v: number | null, digits = 1) => (v === null ? "–" : Number(v).toFixed(digits));
   return (
-    <div className="card overflow-x-auto">
+    <div className="card overflow-x-auto" tabIndex={0} role="region" aria-label="Nutrition table (scrolls sideways)">
       <table className="w-full min-w-[640px] text-left text-sm">
         <caption className="sr-only">Nutrition per 100 g</caption>
         <thead className="text-muted">

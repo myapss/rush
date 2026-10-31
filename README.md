@@ -5,11 +5,12 @@ A worldwide, subscription-based diet and meal-planning web app. *NutriPlan AI is
 Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Postgres, Auth, Row Level Security).
 
 - Architecture and roadmap: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- Launch checklist: [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md)
 - Calculation methods: [`docs/calculations.md`](docs/calculations.md)
 
 ## Status
 
-**Phases 1–3 (Foundation, Core product, Monetization) are built.** The real food data still has to be imported, and Paddle needs to be configured (see below).
+**Phases 1–4 (Foundation, Core product, Monetization, Quality & launch prep) are built.** See [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md) for what's left before launch. The real food data still has to be imported, and Paddle needs to be configured (see below).
 
 | Area | State |
 |---|---|
@@ -24,7 +25,9 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 | Progress tracker (weight, waist, adherence, notes, trend chart) | ✅ |
 | Paddle subscriptions: checkout, verified webhooks, cancel/resume, billing portal, usage display | ✅ (tested with signed test webhooks; needs your Paddle account) |
 | Free/Premium limits enforced in Postgres | ✅ |
-| Analytics, error monitoring, launch checks | Phase 4 |
+| Error monitoring (Sentry, PII-scrubbed), error pages, `/api/health` | ✅ (needs your Sentry DSN) |
+| GA4 analytics behind an opt-in cookie banner, public pages only | ✅ (needs your GA ID) |
+| Accessibility checks on all pages; recipe-library safety tests; daily data-retention job | ✅ |
 
 Legal pages are **drafts** and must be reviewed by a lawyer before launch. Recipes are **not yet reviewed by a dietitian**, and the app says so.
 

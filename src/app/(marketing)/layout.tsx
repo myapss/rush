@@ -1,3 +1,4 @@
+import { Analytics } from "@/components/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -12,6 +13,7 @@ export default function MarketingLayout({ children }: LayoutProps<"/">) {
         {children}
       </main>
       <SiteFooter />
+      <Analytics />
     </>
   );
 }

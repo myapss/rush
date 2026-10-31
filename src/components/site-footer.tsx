@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CookieSettingsButton } from "@/components/analytics";
 
 const GROUPS = [
   {
@@ -51,6 +52,11 @@ export function SiteFooter() {
                   </Link>
                 </li>
               ))}
+              {g.title === "Legal" && (
+                <li>
+                  <CookieSettingsButton />
+                </li>
+              )}
             </ul>
           </nav>
         ))}
