@@ -12,14 +12,14 @@ const PLANS = [
     name: "Free",
     price: "$0",
     period: "forever",
-    features: ["Calorie, TDEE, protein and BMI calculators", "Saved preferences and daily targets", "1 personalized 7-day meal plan per month", "5 meal swaps per month", "Shopping list and recipe finder"],
+    features: ["Calorie, TDEE, protein and BMI calculators", "Saved preferences and daily targets", "1 personalized 7-day meal plan per month", "3 AI recipe generations per month", "5 meal swaps per month", "Shopping list and recipe finder"],
     cta: { href: "/signup", label: "Start free" },
   },
   {
     name: "Premium",
     price: "$9.99",
     period: "per month, or $59.99 per year",
-    features: ["30 meal plans per month", "300 meal swaps per month", "Saved recipes and plan history", "Progress tracking", "Everything in Free"],
+    features: ["30 meal plans per month", "200 AI recipe generations per month", "300 meal swaps per month", "Saved recipes and plan history", "Progress tracking", "Everything in Free"],
     cta: { href: "/dashboard/billing", label: "Get Premium" },
   },
 ];

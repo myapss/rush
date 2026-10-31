@@ -1,41 +1,14 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
+import { AiError, aiConfigured, anthropic, DEFAULT_MODEL, usageFrom, type AiUsage } from "@/lib/ai/client";
 import { betaZodOutputFormat } from "@anthropic-ai/sdk/helpers/beta/zod";
 import { z } from "zod";
 import type { Pools } from "./plan";
 import { slotTargets } from "./slots";
 import type { MealType, PlannerPrefs, PlanTargets } from "./types";
 
-export const DEFAULT_PLANNER_MODEL = "claude-opus-5-5";
-
-/** USD per million tokens. Used for cost monitoring only. */
-const PRICES: Record<string, { input: number; output: number; cacheRead: number; cacheWrite: number }> = {
-  "claude-opus-5-5": { input: 4, output: 20, cacheRead: 0.2, cacheWrite: 5 },
-  "claude-sonnet-5-5": { input: 2, output: 10, cacheRead: 0.2, cacheWrite: 2.5 },
-  "claude-haiku-5-5": { input: 0.1, output: 0.5, cacheRead: 0.01, cacheWrite: 0.125 },
-};
-
-export function aiConfigured(): boolean {
-  return Boolean(process.env.ANTHROPIC_API_KEY);
-}
-
-export class AiPlanError extends Error {
-  constructor(
-    message: string,
-    readonly kind: "refusal" | "truncated" | "unparseable" | "api",
-    readonly usage?: AiUsage,
-  ) {
-    super(message);
-  }
-}
-
-export interface AiUsage {
-  model: string;
-  inputTokens: number;
-  outputTokens: number;
-  costUsd: number | null;
-  latencyMs: number;
-}
+export const DEFAULT_PLANNER_MODEL = DEFAULT_MODEL;
+export { aiConfigured, AiError as AiPlanError, type AiUsage };
 
 export interface AiPicks {
   days: { mealType: MealType; recipeId: string }[][];
@@ -117,7 +90,7 @@ export async function aiPickRecipes(args: {
     feedback?.length ? `\nA previous attempt had these problems; fix them:\n- ${feedback.join("\n- ")}` : "",
   ].join("\n");
 
-  const client = new Anthropic({ maxRetries: 2, timeout: 90_000 });
+  const client = anthropic();
   const started = Date.now();
   let response;
   try {
@@ -131,31 +104,16 @@ export async function aiPickRecipes(args: {
       messages: [{ role: "user", content: userContent }],
     });
   } catch (e) {
-    if (e instanceof Anthropic.APIError) throw new AiPlanError(`Anthropic API error ${e.status ?? ""}: ${e.message}`, "api");
+    if (e instanceof Anthropic.APIError) throw new AiError(`Anthropic API error ${e.status ?? ""}: ${e.message}`, "api");
     throw e;
   }
 
-  const servedModel = response.model ?? model;
-  const price = PRICES[servedModel];
-  const u = response.usage;
-  const usage: AiUsage = {
-    model: servedModel,
-    inputTokens: u.input_tokens + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0),
-    outputTokens: u.output_tokens,
-    costUsd: price
-      ? (u.input_tokens * price.input +
-          (u.cache_read_input_tokens ?? 0) * price.cacheRead +
-          (u.cache_creation_input_tokens ?? 0) * price.cacheWrite +
-          u.output_tokens * price.output) /
-        1_000_000
-      : null,
-    latencyMs: Date.now() - started,
-  };
+  const usage = usageFrom(response.model ?? model, response.usage, started);
 
-  if (response.stop_reason === "refusal") throw new AiPlanError("The model declined the request.", "refusal", usage);
-  if (response.stop_reason === "max_tokens") throw new AiPlanError("The model's answer was cut off.", "truncated", usage);
+  if (response.stop_reason === "refusal") throw new AiError("The model declined the request.", "refusal", usage);
+  if (response.stop_reason === "max_tokens") throw new AiError("The model's answer was cut off.", "truncated", usage);
   const parsed = response.parsed_output;
-  if (!parsed) throw new AiPlanError("The model's answer didn't match the schema.", "unparseable", usage);
+  if (!parsed) throw new AiError("The model's answer didn't match the schema.", "unparseable", usage);
 
   const days = parsed.days.map((day) =>
     slots.map((type, i) => {

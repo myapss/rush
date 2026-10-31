@@ -29,6 +29,7 @@ test("no serious accessibility violations on signed-in pages", async ({ page }, 
     ["/dashboard/my-meals", "Planned automatically"],
     ["/dashboard/grocery-list", /ticked/],
     ["/dashboard/recipes", /found/],
+    ["/dashboard/recipes/generate", "Your AI recipes"],
     ["/dashboard/progress", "Add an entry"],
     ["/dashboard/billing", "Usage this month"],
     ["/dashboard/settings", "Your data"],
@@ -40,7 +41,7 @@ test("no serious accessibility violations on signed-in pages", async ({ page }, 
     for (const v of await seriousViolations(page)) problems.push(`${path} → ${v}`);
   }
   await page.goto("/dashboard/recipes");
-  await page.locator("main a[href^='/dashboard/recipes/']").first().click();
+  await page.locator("main a[href^='/dashboard/recipes/']:not([href$='/generate'])").first().click();
   await expect(page.getByRole("heading", { name: "Method" })).toBeVisible();
   for (const v of await seriousViolations(page)) problems.push(`recipe detail → ${v}`);
   expect(problems).toEqual([]);

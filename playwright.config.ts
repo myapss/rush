@@ -13,7 +13,14 @@ export default defineConfig({
     { name: "desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "mobile", use: { ...devices["Pixel 7"] } },
   ],
-  webServer: {
+  webServer: [
+  {
+    // Test-only mock of the Anthropic API (see tests/e2e/mock-anthropic.mjs).
+    command: "node tests/e2e/mock-anthropic.mjs",
+    url: "http://127.0.0.1:3999/health",
+    reuseExistingServer: !process.env.CI,
+  },
+  {
     command: `npm run build && npx next start -p ${port}`,
     port,
     timeout: 300_000,
@@ -26,6 +33,10 @@ export default defineConfig({
       PADDLE_PRICE_MONTHLY_ID: "pri_test_monthly",
       PADDLE_PRICE_YEARLY_ID: "pri_test_yearly",
       NEXT_PUBLIC_PADDLE_CLIENT_TOKEN: "test_e2e_client_token",
+      // AI calls go to the local mock; the planner gets an error and uses its rules fallback.
+      ANTHROPIC_API_KEY: "test-e2e-key",
+      ANTHROPIC_BASE_URL: "http://127.0.0.1:3999",
     },
   },
+  ],
 });

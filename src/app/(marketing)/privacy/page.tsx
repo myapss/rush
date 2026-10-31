@@ -45,7 +45,7 @@ export default function PrivacyPage() {
       <ul>
         <li><strong>Supabase:</strong> database and sign-in (stores your account, preferences, plans and progress).</li>
         <li><strong>Vercel:</strong> website hosting.</li>
-        <li><strong>Anthropic:</strong> AI meal-plan assembly. It receives your food preferences, your daily calorie and protein targets, and candidate recipe names, but never your name, email, weight, measurements or health conditions.</li>
+        <li><strong>Anthropic:</strong> AI meal planning and recipe ideas. It receives your food preferences, your daily calorie and protein targets, the ingredients and notes you type into the recipe generator, and lists of foods and recipes, but never your name, email, weight, measurements or health conditions.</li>
         <li><strong>Paddle:</strong> our reseller and merchant of record for payments, tax and invoices.</li>
         <li><strong>Sentry:</strong> error monitoring. Reports are stripped of cookies, request contents and personal details.</li>
         <li><strong>Google Analytics:</strong> only with your consent, as described above.</li>

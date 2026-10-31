@@ -1,7 +1,7 @@
 -- Row Level Security tests. Run with: npm run test:db
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(61);
+select plan(64);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres, bypassing RLS)
@@ -206,6 +206,17 @@ reset role;
 select ok(public.metrics_summary(30) ? 'funnel', 'metrics summary returns the funnel');
 set local role authenticated;
 select throws_ok($$select public.metrics_summary(30)$$, '42501', null, 'users cannot read business metrics');
+reset role;
+
+-- AI recipe generator: private AI recipes only.
+set local role authenticated;
+set local request.jwt.claims = '{"sub": "11111111-1111-1111-1111-111111111111", "role": "authenticated"}';
+select lives_ok($$insert into public.recipes (title, servings, origin, visibility, created_by)
+  values ('AI idea', 2, 'ai_generated', 'private', '11111111-1111-1111-1111-111111111111')$$, 'A: can save a private AI recipe');
+select throws_ok($$insert into public.recipes (title, servings, origin, visibility, created_by)
+  values ('AI public', 2, 'ai_generated', 'public', '11111111-1111-1111-1111-111111111111')$$, null, null, 'A: cannot publish an AI recipe');
+select throws_ok($$insert into public.recipes (title, servings, origin, visibility, created_by)
+  values ('Fake curated', 2, 'curated', 'private', '11111111-1111-1111-1111-111111111111')$$, '42501', null, 'A: cannot mark a recipe as curated');
 reset role;
 
 -- ---------------------------------------------------------------------------

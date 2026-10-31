@@ -613,6 +613,7 @@ export type Database = {
       };
       recipes: {
         Row: {
+          ai_event_id: number | null;
           allergen_tags: Database["public"]["Enums"]["allergen"][];
           cook_minutes: number;
           cost_tier: number | null;
@@ -631,12 +632,14 @@ export type Database = {
           review_status: string;
           servings: number;
           slug: string | null;
+          substitutions: NonNullable<Json>;
           title: string;
           updated_at: string;
           visibility: Database["public"]["Enums"]["recipe_visibility"];
         };
         ComputedFields: never;
         Insert: {
+          ai_event_id?: number | null;
           allergen_tags?: Database["public"]["Enums"]["allergen"][];
           cook_minutes?: number;
           cost_tier?: number | null;
@@ -655,11 +658,13 @@ export type Database = {
           review_status?: string;
           servings: number;
           slug?: string | null;
+          substitutions?: NonNullable<Json>;
           title: string;
           updated_at?: string;
           visibility?: Database["public"]["Enums"]["recipe_visibility"];
         };
         Update: {
+          ai_event_id?: number | null;
           allergen_tags?: Database["public"]["Enums"]["allergen"][];
           cook_minutes?: number;
           cost_tier?: number | null;
@@ -678,11 +683,20 @@ export type Database = {
           review_status?: string;
           servings?: number;
           slug?: string | null;
+          substitutions?: NonNullable<Json>;
           title?: string;
           updated_at?: string;
           visibility?: Database["public"]["Enums"]["recipe_visibility"];
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: "recipes_ai_event_id_fkey";
+            columns: ["ai_event_id"];
+            isOneToOne: false;
+            referencedRelation: "ai_events";
+            referencedColumns: ["id"];
+          },
+        ];
       };
       saved_recipes: {
         Row: {

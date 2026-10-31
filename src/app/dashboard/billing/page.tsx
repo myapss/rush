@@ -9,8 +9,7 @@ import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Plan & billing" };
 
-// The AI recipe generator isn't built yet, so its quota isn't shown.
-const FEATURE_LABEL = { meal_plan: "Meal plans", substitution: "Meal swaps" } as const;
+const FEATURE_LABEL = { meal_plan: "Meal plans", recipe: "AI recipe ideas", substitution: "Meal swaps" } as const;
 const PLAN_LABEL = { premium_monthly: "Premium, monthly", premium_yearly: "Premium, yearly" } as const;
 
 export default function BillingPage({ searchParams }: PageProps<"/dashboard/billing">) {
@@ -33,7 +32,7 @@ async function Billing({ searchParams }: { searchParams: PageProps<"/dashboard/b
   const [sub, { data: tier }, ...quotas] = await Promise.all([
     getSubscriptionRow(user.id),
     supabase.rpc("my_tier"),
-    ...(["meal_plan", "substitution"] as const).map((f) => supabase.rpc("quota_status", { p_feature: f }).maybeSingle().then((r) => ({ feature: f, q: r.data }))),
+    ...(["meal_plan", "recipe", "substitution"] as const).map((f) => supabase.rpc("quota_status", { p_feature: f }).maybeSingle().then((r) => ({ feature: f, q: r.data }))),
   ]);
   const premium = tier === "premium";
   const config = billingConfig();
@@ -126,7 +125,7 @@ async function Billing({ searchParams }: { searchParams: PageProps<"/dashboard/b
             <p className="card text-muted">Premium isn&apos;t available to buy yet. We&apos;ll let you know when it launches.</p>
           )}
           <p className="text-sm text-muted">
-            Premium includes 30 meal plans and 300 meal swaps a month (Free: 1 plan and 5 swaps). Payments are processed by
+            Premium includes 30 meal plans, 200 AI recipe generations and 300 meal swaps a month (Free: 1 plan, 3 recipe generations and 5 swaps). Payments are processed by
             Paddle, our reseller and merchant of record, which shows prices in your local currency and handles sales tax and
             VAT. Cancel any time and keep Premium until the end of the period you&apos;ve paid for.
           </p>

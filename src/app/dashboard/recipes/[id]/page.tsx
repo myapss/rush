@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { PrintButton } from "@/components/print-button";
+import { deleteOwnRecipe } from "@/lib/actions/recipe-generator";
 import { toggleSavedRecipe } from "@/lib/actions/recipes";
 import { requireUser } from "@/lib/auth";
 import { getProfileAndPreferences } from "@/lib/data/profile";
@@ -58,6 +59,14 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/dashboard/recip
         </p>
       </div>
 
+      {recipe.origin === "ai_generated" && (
+        <p className="notice text-sm">
+          <strong>AI-generated recipe.</strong> Nutrition is calculated from USDA data, and every ingredient was checked against
+          your allergies and preferences, but the method hasn&apos;t been reviewed by a person. Use your judgement, and always cook
+          meat, fish and eggs thoroughly.
+        </p>
+      )}
+
       {conflicts.length > 0 && (
         <p className="notice" role="alert">
           <strong>Allergy warning:</strong> this recipe contains {conflicts.map(allergenLabel).join(", ")}, which you&apos;ve told
@@ -74,6 +83,14 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/dashboard/recip
           </button>
         </form>
         <PrintButton />
+        {recipe.created_by === user.id && (
+          <form action={deleteOwnRecipe}>
+            <input type="hidden" name="recipeId" value={recipe.id} />
+            <button type="submit" className="btn btn-danger">
+              Delete recipe
+            </button>
+          </form>
+        )}
       </div>
 
       <section aria-labelledby="nutrition-h" className="card">
@@ -96,7 +113,7 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/dashboard/recip
         <p className="mt-2 text-xs text-muted">
           Calculated from USDA FoodData Central (SR Legacy) values for each ingredient.
           {recipe.allergen_tags.length > 0 && ` Contains: ${recipe.allergen_tags.map(allergenLabel).join(", ")}.`}
-          {recipe.review_status === "unreviewed" && " This recipe hasn't been reviewed by a dietitian yet."}
+          {recipe.review_status === "unreviewed" && recipe.origin === "curated" && " This recipe hasn't been reviewed by a dietitian yet."}
         </p>
       </section>
 
@@ -135,6 +152,22 @@ async function Recipe({ params, searchParams }: Pick<PageProps<"/dashboard/recip
         </ol>
         <p className="mt-3 text-xs text-muted">Cook meat, fish and eggs thoroughly. Always check product labels for allergens.</p>
       </section>
+
+      {(recipe.substitutions as { instead_of: string; use: string; tip: string }[]).length > 0 && (
+        <section aria-labelledby="subs-h" className="card">
+          <h2 id="subs-h" className="mb-2 font-bold">
+            Substitutions
+          </h2>
+          <ul className="grid gap-1.5 text-sm">
+            {(recipe.substitutions as { instead_of: string; use: string; tip: string }[]).map((s, i) => (
+              <li key={i}>
+                <strong>{s.use}</strong> instead of {s.instead_of}
+                {s.tip && <span className="text-muted">: {s.tip}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </article>
   );
 }

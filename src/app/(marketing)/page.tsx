@@ -19,7 +19,7 @@ const FEATURES = [
   { title: "Your cuisine, your units", body: "Metric or imperial, local currency, and cuisines from Nigerian to Japanese.", ready: true },
   { title: "AI 7-day meal plans", body: "Personalized plans where every nutrition number comes from a food database, not the AI.", ready: true },
   { title: "Smart grocery lists", body: "Combined, grouped and scaled ingredient lists you can tick off and print.", ready: true },
-  { title: "Recipe ideas from your fridge", body: "Enter what you have and find matching recipes, with allergen warnings.", ready: true },
+  { title: "Recipe ideas from your fridge", body: "Tell us what you have and AI suggests recipes using only foods that are safe for you, with nutrition from USDA data.", ready: true },
 ];
 
 const FAQ = [

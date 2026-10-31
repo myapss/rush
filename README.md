@@ -30,6 +30,7 @@ Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Pos
 | Accessibility checks on all pages; recipe-library safety tests; daily data-retention job | ✅ |
 | SEO: 9 meal-plan landing pages + hub, 64 public recipe pages, breadcrumbs data, sitemap, real 404s | ✅ (content needs dietitian review) |
 | Owner metrics: `npm run metrics` (funnel, conversion, MRR, churn, AI cost) | ✅ |
+| AI recipe generator ("what's in my kitchen"), validated against allergies and USDA nutrition | ✅ (needs `ANTHROPIC_API_KEY`) |
 
 Legal pages are **drafts** and must be reviewed by a lawyer before launch. Recipes are **not yet reviewed by a dietitian**, and the app says so.
 
@@ -63,6 +64,16 @@ How it's secured:
 - Subscription state is written **only** by `/api/webhooks/paddle`, after verifying Paddle's HMAC signature with a 5-second replay window. Each event is processed once (`billing_events`), and older, out-of-order events are ignored.
 - The "payment complete" message in the browser is only a hint; the billing page waits for the webhook before showing Premium.
 - Deleting an account cancels any live subscription with Paddle first, and refuses to delete if that fails.
+
+## How the AI recipe generator works
+
+1. The user lists what they have. Their entries are matched to our food database, and anything excluded by their allergies, eating style, restrictions or dislikes is left out and reported back to them.
+2. Claude receives only the foods that are safe for this user, as codes (`F1`, `F2` …), plus the on-hand items and any notes, which are marked as data, not instructions.
+3. Every idea is validated in code (`src/lib/recipes/validate.ts`): known codes only, allergen and diet re-checks, realistic amounts and times, 2–20 ingredients, a sensible calorie range per serving. Invalid ideas are dropped, and the request is retried once with the problems listed.
+4. Valid recipes are saved as **private** recipes (`origin = 'ai_generated'`). The database computes nutrition and allergens from USDA values. Recipes are labelled as AI-generated and unreviewed, and can't be made public or used in meal plans.
+5. Quota: Free 3 per month, Premium 200. Failed generations don't count.
+
+End-to-end tests run against a local mock of the Anthropic API (`tests/e2e/mock-anthropic.mjs`), so the real SDK, parsing and validation paths are exercised without network access.
 
 ## Content and SEO
 

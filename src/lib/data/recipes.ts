@@ -6,7 +6,7 @@ export async function getRecipe(id: string) {
   const { data, error } = await supabase
     .from("recipes")
     .select(
-      "id, title, description, cuisine, meal_types, servings, prep_minutes, cook_minutes, instructions, dietary_pattern, allergen_tags, restriction_tags, nutrition_per_serving, origin, review_status, recipe_ingredients(grams, quantity, unit, preparation_note, position, food_items(id, name, display_name, fdc_id, source_name, source_reference))",
+      "id, title, description, cuisine, meal_types, servings, prep_minutes, cook_minutes, instructions, dietary_pattern, allergen_tags, restriction_tags, nutrition_per_serving, origin, review_status, created_by, substitutions, recipe_ingredients(grams, quantity, unit, preparation_note, position, food_items(id, name, display_name, fdc_id, source_name, source_reference))",
     )
     .eq("id", id)
     .maybeSingle();

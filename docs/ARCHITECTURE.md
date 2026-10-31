@@ -155,7 +155,7 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 **Phase 5: Growth**
 - [x] SEO landing pages (9 + hub) and 64 recipe pages with original content; owner metrics report (`npm run metrics`)
 - [ ] Additional languages and regional food-composition sources, driven by real demand (not started; the app is English-only and copy isn't yet in message files)
-- [ ] AI recipe generator from the original blueprint (not started; the ingredient-based recipe finder covers part of the need)
+- [x] AI recipe generator: allowed-food catalog, structured output, code validation, private AI recipes, quota
 
 ## 5. Accounts and credentials needed (when the phase needs them, not now)
 

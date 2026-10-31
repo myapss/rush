@@ -81,6 +81,15 @@ export async function seedFixtures() {
 
 export async function cleanupFixtures() {
   const db = admin();
+  const { data: foods } = await db.from("food_items").select("id").like("slug", "test\\_%");
+  const ids = (foods ?? []).map((f) => f.id);
+  if (ids.length) {
+    // Recipes created during tests (e.g. AI-generated ones) reference the test foods.
+    const { data: uses } = await db.from("recipe_ingredients").select("recipe_id").in("food_item_id", ids);
+    const recipeIds = [...new Set((uses ?? []).map((u) => u.recipe_id))];
+    if (recipeIds.length) await db.from("recipes").delete().in("id", recipeIds);
+  }
   await db.from("recipes").delete().like("slug", "e2e-%");
-  await db.from("food_items").delete().like("slug", "test\\_%");
+  const { error } = await db.from("food_items").delete().like("slug", "test\\_%");
+  if (error) throw new Error(`fixture cleanup failed: ${error.message}`);
 }

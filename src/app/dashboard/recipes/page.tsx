@@ -16,7 +16,12 @@ const MEAL_TYPES = ["breakfast", "lunch", "dinner", "snack"] as const;
 export default function RecipesPage({ searchParams }: PageProps<"/dashboard/recipes">) {
   return (
     <div className="grid gap-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Recipes</h1>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <h1 className="text-3xl font-extrabold tracking-tight">Recipes</h1>
+        <Link href="/dashboard/recipes/generate" className="btn btn-primary">
+          ✨ Create a recipe with AI
+        </Link>
+      </div>
       <Suspense fallback={<p className="text-muted">Loading recipes…</p>}>
         <Recipes searchParams={searchParams} />
       </Suspense>
