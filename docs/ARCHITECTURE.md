@@ -1,6 +1,6 @@
 # NutriPlan AI: Architecture Proposal (Draft for Approval)
 
-Status: **proposal, not yet approved**. Nothing below has been built.
+Status: **approved**. Phase 1 (Foundation) is built; see the README for current status.
 
 ## 0. What's in the repository now
 

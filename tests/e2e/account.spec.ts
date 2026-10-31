@@ -1,0 +1,102 @@
+import { expect, test, type Page } from "@playwright/test";
+
+const MAILPIT = process.env.MAILPIT_URL ?? "http://127.0.0.1:54324";
+
+async function signInLink(email: string): Promise<string> {
+  for (let i = 0; i < 30; i++) {
+    const res = await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:${email}`)}`);
+    const { messages } = (await res.json()) as { messages: { ID: string }[] };
+    if (messages?.length) {
+      const msg = (await (await fetch(`${MAILPIT}/api/v1/message/${messages[0].ID}`)).json()) as { HTML: string };
+      const href = msg.HTML.match(/href="([^"]*token_hash=[^"]*)"/)?.[1];
+      if (href) return href.replaceAll("&amp;", "&");
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  throw new Error(`No sign-in email for ${email}`);
+}
+
+async function signUp(page: Page, email: string) {
+  await page.goto("/signup");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("I am 18 years old or older.").check();
+  await page.getByLabel(/I agree to the/).check();
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
+  const link = new URL(await signInLink(email));
+  await page.goto(link.pathname + link.search);
+}
+
+test.describe.configure({ mode: "serial" });
+
+test("signup requires age confirmation", async ({ page }) => {
+  await page.goto("/signup");
+  await page.getByLabel("Email").fill("young@example.test");
+  await page.getByLabel(/I agree to the/).check();
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page.getByText(/Please confirm you are 18 or older/)).toBeVisible();
+});
+
+test("full account lifecycle: signup, onboarding, targets, settings, export, delete", async ({ page }, info) => {
+  const email = `e2e-${info.project.name}-${Date.now()}@example.test`;
+  await signUp(page, email);
+
+  // New users are sent to onboarding before the dashboard.
+  await expect(page).toHaveURL(/\/onboarding$/);
+  await page.getByLabel("Country or region").selectOption("NG");
+  await page.getByLabel("Currency for budgets").selectOption("NGN");
+  await page.getByLabel("Birth year").fill(String(new Date().getUTCFullYear() - 15));
+  await page.getByLabel("Height (cm)").fill("170");
+  await page.getByLabel("Weight (kg)").fill("72");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  // Under-18 and missing consent are both rejected.
+  await expect(page.getByText("NutriPlan AI is for adults aged 18 and over.")).toBeVisible();
+  await expect(page.getByText(/please give consent below/)).toBeVisible();
+
+  await page.getByLabel("Birth year").fill("1990");
+  await page.getByLabel(/I consent to NutriPlan AI storing/).check();
+  await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
+  await page.getByRole("checkbox", { name: "Nigerian", exact: true }).check();
+  await page.getByLabel("Goal").selectOption("lose");
+  await page.getByRole("button", { name: "Save and continue" }).click();
+
+  await expect(page).toHaveURL(/\/dashboard$/);
+  await expect(page.getByRole("heading", { name: "Daily targets" })).toBeVisible();
+  await expect(page.getByText("Calories", { exact: true })).toBeVisible();
+  await expect(page.locator("dd", { hasText: "Peanuts" })).toBeVisible();
+  await expect(page.getByText(/0 of 1 meal plans used/)).toBeVisible();
+
+  // Withdrawing consent removes health data and targets.
+  await page.getByRole("link", { name: "Settings" }).first().click();
+  await page.getByRole("checkbox", { name: /I consent to NutriPlan AI storing/ }).uncheck();
+  await page.getByRole("spinbutton", { name: "Height (cm)" }).fill("");
+  await page.getByRole("spinbutton", { name: "Weight (kg)" }).fill("");
+  await page.getByRole("button", { name: "Save changes" }).click();
+  await expect(page.getByRole("status")).toHaveText("Saved.");
+
+  // Export contains only this user's data.
+  const res = await page.request.get("/api/account/export");
+  expect(res.status()).toBe(200);
+  const data = await res.json();
+  expect(data.account.email).toBe(email);
+  expect(data.profiles).toHaveLength(1);
+  expect(data.profiles[0].weight_kg).toBeNull();
+  expect(data.profiles[0].health_data_consent_at).toBeNull();
+  expect(data.user_preferences[0].allergies).toEqual(["peanut"]);
+
+  await page.goto("/dashboard");
+  await expect(page.getByText(/Add your height and weight/)).toBeVisible();
+
+  // Delete the account.
+  await page.goto("/dashboard/settings");
+  await page.getByRole("textbox", { name: "Type DELETE to confirm" }).fill("DELETE");
+  await page.getByRole("button", { name: "Permanently delete my account" }).click();
+  await expect(page).toHaveURL(/\/\?account=deleted$/);
+  await page.goto("/dashboard");
+  await expect(page).toHaveURL(/\/login/);
+});
+
+test("signed-out export is rejected", async ({ request }) => {
+  expect((await request.get("/api/account/export")).status()).toBe(401);
+});

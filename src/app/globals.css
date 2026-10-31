@@ -1,0 +1,199 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f7faf7;
+  --surface: #ffffff;
+  --surface-2: #eef5f0;
+  --fg: #13241a;
+  --muted: #536459;
+  --border: #d8e3db;
+  --brand: #1d7340;
+  --brand-hover: #165a32;
+  --brand-fg: #ffffff;
+  --brand-soft: #e1f1e6;
+  --warn-bg: #fff5dc;
+  --warn-fg: #5e4300;
+  --warn-border: #f0d68a;
+  --danger: #b42318;
+  --danger-soft: #fdecea;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1612;
+    --surface: #17211b;
+    --surface-2: #1c2921;
+    --fg: #e5eee8;
+    --muted: #9db0a3;
+    --border: #2b3a31;
+    --brand: #5ccf8a;
+    --brand-hover: #7ddca2;
+    --brand-fg: #08130c;
+    --brand-soft: #1d3527;
+    --warn-bg: #2e2510;
+    --warn-fg: #f3d58d;
+    --warn-border: #5b4a1e;
+    --danger: #ff8b80;
+    --danger-soft: #3a1714;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-fg: var(--brand-fg);
+  --color-brand-soft: var(--brand-soft);
+  --color-danger: var(--danger);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+@layer components {
+  .container-page {
+    width: min(1120px, 100% - 32px);
+    margin-inline: auto;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 0.65rem;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.15s, border-color 0.15s;
+  }
+  .btn:hover:not(:disabled) {
+    border-color: var(--brand);
+  }
+  .btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  .btn-primary {
+    background: var(--brand);
+    border-color: var(--brand);
+    color: var(--brand-fg);
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: var(--brand-hover);
+    border-color: var(--brand-hover);
+  }
+  .btn-danger {
+    color: var(--danger);
+    border-color: var(--danger);
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1.25rem;
+  }
+  .input {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--fg);
+    font: inherit;
+  }
+  .label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+  .hint {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--muted);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    font-weight: 500;
+    font-size: 0.92rem;
+    cursor: pointer;
+  }
+  .chip:has(input:checked) {
+    border-color: var(--brand);
+    background: var(--brand-soft);
+  }
+  .chip input {
+    accent-color: var(--brand);
+  }
+  .notice {
+    border-radius: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--warn-border);
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+  }
+  .error-text {
+    color: var(--danger);
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+  .prose-page h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 2rem 0 0.6rem;
+  }
+  .prose-page h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin: 1.4rem 0 0.4rem;
+  }
+  .prose-page p,
+  .prose-page li {
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .prose-page p {
+    margin: 0 0 0.9rem;
+  }
+  .prose-page ul {
+    list-style: disc;
+    padding-left: 1.3rem;
+    margin: 0 0 0.9rem;
+  }
+  .prose-page a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
