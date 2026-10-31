@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rush Diet Planner</title>
+  <meta name="description" content="Free diet planner: calculate your daily calories and macros, then get a 7-day meal plan with dishes from around the world and a shopping list.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥗</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container nav">
+      <a class="brand" href="#top">🥗 Rush<span>Diet Planner</span></a>
+      <nav>
+        <a href="#calculator">Calculator</a>
+        <a href="#plan">Meal plan</a>
+        <a href="#shopping">Shopping list</a>
+        <a href="#tips">Tips</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container">
+        <h1>Plan meals that fit your goals</h1>
+        <p class="lead">Work out your daily calories and macros, then get a 7-day meal plan with dishes from around the world. It works in metric or imperial units, and it's free with no sign-up.</p>
+        <a class="btn btn-primary" href="#calculator">Start planning</a>
+      </div>
+    </section>
+
+    <section id="calculator" class="section">
+      <div class="container">
+        <h2>1. Your daily targets</h2>
+        <form id="profile-form" class="card form-grid" novalidate>
+          <fieldset class="full">
+            <legend>Units</legend>
+            <label class="pill"><input type="radio" name="units" value="metric" checked> Metric (kg, cm)</label>
+            <label class="pill"><input type="radio" name="units" value="imperial"> Imperial (lb, ft/in)</label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Sex</legend>
+            <label class="pill"><input type="radio" name="sex" value="female" checked> Female</label>
+            <label class="pill"><input type="radio" name="sex" value="male"> Male</label>
+          </fieldset>
+
+          <label>Age (years)
+            <input type="number" name="age" min="18" max="100" value="30" required>
+          </label>
+
+          <div class="metric-only">
+            <label>Height (cm)
+              <input type="number" name="heightCm" min="120" max="230" value="170">
+            </label>
+          </div>
+          <div class="imperial-only split" hidden>
+            <label>Height (ft)
+              <input type="number" name="heightFt" min="4" max="7" value="5">
+            </label>
+            <label>(in)
+              <input type="number" name="heightIn" min="0" max="11" value="7">
+            </label>
+          </div>
+
+          <div class="metric-only">
+            <label>Weight (kg)
+              <input type="number" name="weightKg" min="35" max="250" step="0.1" value="70">
+            </label>
+          </div>
+          <div class="imperial-only" hidden>
+            <label>Weight (lb)
+              <input type="number" name="weightLb" min="77" max="550" step="0.1" value="154">
+            </label>
+          </div>
+
+          <label>Activity level
+            <select name="activity">
+              <option value="1.2">Sedentary (little or no exercise)</option>
+              <option value="1.375" selected>Light (exercise 1–3 days/week)</option>
+              <option value="1.55">Moderate (exercise 3–5 days/week)</option>
+              <option value="1.725">Very active (exercise 6–7 days/week)</option>
+              <option value="1.9">Athlete (hard training or physical job)</option>
+            </select>
+          </label>
+
+          <label>Goal
+            <select name="goal">
+              <option value="lose">Lose weight (about 0.5 kg / 1 lb per week)</option>
+              <option value="maintain" selected>Maintain weight</option>
+              <option value="gain">Gain weight / build muscle</option>
+            </select>
+          </label>
+
+          <label>Eating style
+            <select name="diet">
+              <option value="omnivore">Everything</option>
+              <option value="pescatarian">Pescatarian (fish, no meat)</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="vegan">Vegan</option>
+            </select>
+          </label>
+
+          <fieldset class="full">
+            <legend>Avoid</legend>
+            <label class="pill"><input type="checkbox" name="exclude" value="gluten"> Gluten</label>
+            <label class="pill"><input type="checkbox" name="exclude" value="dairy"> Dairy</label>
+            <label class="pill"><input type="checkbox" name="exclude" value="nuts"> Nuts</label>
+            <label class="pill"><input type="checkbox" name="exclude" value="pork"> Pork</label>
+            <label class="pill"><input type="checkbox" name="exclude" value="beef"> Beef</label>
+          </fieldset>
+
+          <p id="form-error" class="error full" role="alert" hidden></p>
+
+          <div class="full actions">
+            <button type="submit" class="btn btn-primary">Calculate &amp; build my plan</button>
+          </div>
+        </form>
+
+        <div id="results" class="results" hidden aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section id="plan" class="section alt">
+      <div class="container">
+        <div class="section-head">
+          <h2>2. Your 7-day meal plan</h2>
+          <div class="toolbar">
+            <button type="button" id="regenerate" class="btn" disabled>New plan</button>
+            <button type="button" id="print" class="btn" disabled>Print</button>
+          </div>
+        </div>
+        <p id="plan-empty" class="muted">Fill in your details above to get a meal plan.</p>
+        <div id="plan-grid" class="plan-grid"></div>
+      </div>
+    </section>
+
+    <section id="shopping" class="section">
+      <div class="container">
+        <div class="section-head">
+          <h2>3. Shopping list</h2>
+          <div class="toolbar">
+            <button type="button" id="clear-checked" class="btn" disabled>Uncheck all</button>
+          </div>
+        </div>
+        <p id="shopping-empty" class="muted">Your shopping list appears here once you have a meal plan.</p>
+        <ul id="shopping-list" class="shopping-list"></ul>
+      </div>
+    </section>
+
+    <section id="tips" class="section alt">
+      <div class="container">
+        <h2>Healthy eating tips</h2>
+        <div class="tips">
+          <article class="card"><h3>💧 Drink water</h3><p>Drink regularly through the day. Thirst can feel like hunger, so try a glass of water before you snack.</p></article>
+          <article class="card"><h3>🥦 Half a plate of vegetables</h3><p>Fill half your plate with vegetables or salad. They add fibre and nutrients for few calories.</p></article>
+          <article class="card"><h3>🍗 Protein at every meal</h3><p>Beans, lentils, tofu, eggs, fish and lean meat keep you full and help maintain muscle.</p></article>
+          <article class="card"><h3>🐢 Steady progress</h3><p>Losing about 0.5–1 kg (1–2 lb) a week is sustainable. Crash diets rarely last.</p></article>
+          <article class="card"><h3>😴 Sleep and move</h3><p>Good sleep and daily movement, even walking, make your diet easier to stick to.</p></article>
+          <article class="card"><h3>🌍 Eat what you enjoy</h3><p>Swap any meal for a local dish with similar calories. A plan you enjoy is a plan you'll follow.</p></article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Disclaimer:</strong> This tool gives general estimates for healthy adults and is not medical advice. If you are pregnant, breastfeeding, under 18, or have a medical condition, talk to a doctor or registered dietitian before changing your diet.</p>
+      <p class="muted">Your details are stored only in your browser.</p>
+    </div>
+  </footer>
+
+  <script src="meals.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
