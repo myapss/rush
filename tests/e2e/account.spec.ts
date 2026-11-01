@@ -25,11 +25,11 @@ test("full account lifecycle: signup, onboarding, targets, settings, export, del
   await page.getByRole("button", { name: "Save and continue" }).click();
 
   // Under-18 and missing consent are both rejected.
-  await expect(page.getByText("NutriPlan AI is for adults aged 18 and over.")).toBeVisible();
+  await expect(page.getByText("ChopPlanner is for adults aged 18 and over.")).toBeVisible();
   await expect(page.getByText(/please give consent below/)).toBeVisible();
 
   await page.getByLabel("Birth year").fill("1990");
-  await page.getByLabel(/I consent to NutriPlan AI storing/).check();
+  await page.getByLabel(/I consent to ChopPlanner storing/).check();
   await page.getByRole("checkbox", { name: "Peanuts", exact: true }).check();
   await page.getByRole("checkbox", { name: "Nigerian", exact: true }).check();
   await page.getByLabel("Goal").selectOption("lose");
@@ -43,7 +43,7 @@ test("full account lifecycle: signup, onboarding, targets, settings, export, del
 
   // Withdrawing consent removes health data and targets.
   await page.getByRole("link", { name: "Settings" }).first().click();
-  await page.getByRole("checkbox", { name: /I consent to NutriPlan AI storing/ }).uncheck();
+  await page.getByRole("checkbox", { name: /I consent to ChopPlanner storing/ }).uncheck();
   await page.getByRole("spinbutton", { name: "Height (cm)" }).fill("");
   await page.getByRole("spinbutton", { name: "Weight (kg)" }).fill("");
   await page.getByRole("button", { name: "Save changes" }).click();

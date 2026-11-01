@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CUISINES } from "@/lib/reference";
 
 export const metadata: Metadata = {
-  title: { absolute: "NutriPlan AI: Personalized meal plans for your goals and cuisine" },
+  title: { absolute: "ChopPlanner: Eat smart, wherever you are | Personalized meal plans" },
   alternates: { canonical: "/" },
 };
 
@@ -24,7 +24,7 @@ const FEATURES = [
 
 const FAQ = [
   {
-    q: "Is NutriPlan AI medical advice?",
+    q: "Is ChopPlanner medical advice?",
     a: "No. It provides general nutrition estimates for healthy adults. If you're pregnant, under 18, have a medical condition or a history of disordered eating, please speak to a qualified healthcare professional.",
   },
   {
@@ -53,7 +53,7 @@ export default function HomePage() {
             Meal plans that fit your goals, your food and your budget
           </h1>
           <p className="mb-8 max-w-2xl text-lg text-muted sm:text-xl">
-            Tell us your goal, eating style, allergies and favourite cuisines. NutriPlan AI estimates your needs and helps you
+            Tell us your goal, eating style, allergies and favourite cuisines. ChopPlanner estimates your needs and helps you
             plan practical meals. There are no miracle promises, just sensible, personalized planning.
           </p>
           <div className="flex flex-wrap gap-3">

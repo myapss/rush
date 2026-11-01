@@ -23,7 +23,7 @@ export interface MealPlanPage {
 }
 
 /**
- * Landing-page content. Written by the NutriPlan team for general, healthy
+ * Landing-page content. Written by the ChopPlanner team for general, healthy
  * adults; keep claims conservative and in line with mainstream guidance
  * (WHO, national dietary guidelines). Have a dietitian review before launch.
  */

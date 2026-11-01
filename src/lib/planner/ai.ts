@@ -19,7 +19,7 @@ export interface AiPicks {
 const LETTER: Record<MealType, string> = { breakfast: "B", lunch: "L", dinner: "D", snack: "S" };
 
 // Stable instructions (kept byte-identical between requests).
-const SYSTEM = `You are the meal-planning assistant for NutriPlan AI.
+const SYSTEM = `You are the meal-planning assistant for ChopPlanner.
 
 Your job is to choose recipes for a 7-day meal plan from a list of pre-approved candidates. Every candidate has already been checked against the user's allergies, intolerances, eating style, restrictions and dislikes by the application, so you only choose among them. You never invent recipes, ingredients or nutrition numbers; the application calculates portions and nutrition itself after you choose.
 

@@ -3,7 +3,7 @@ import { publicEnv } from "@/lib/env";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Get in touch with the NutriPlan AI team.",
+  description: "Get in touch with the ChopPlanner team.",
   alternates: { canonical: "/contact" },
 };
 

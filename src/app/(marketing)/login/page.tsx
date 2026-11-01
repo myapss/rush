@@ -6,7 +6,7 @@ import { safeNext } from "@/lib/redirect";
 
 export const metadata: Metadata = {
   title: "Log in",
-  description: "Log in to NutriPlan AI with a secure email link.",
+  description: "Log in to ChopPlanner with a secure email link.",
   alternates: { canonical: "/login" },
 };
 

@@ -35,7 +35,7 @@ export async function onboard(page: Page, opts: { allergies?: string[]; mealsPer
   await page.getByLabel("Birth year").fill("1988");
   await page.getByLabel("Height (cm)").fill("172");
   await page.getByLabel("Weight (kg)").fill("74");
-  await page.getByLabel(/I consent to NutriPlan AI storing/).check();
+  await page.getByLabel(/I consent to ChopPlanner storing/).check();
   for (const a of opts.allergies ?? []) await page.getByRole("checkbox", { name: a, exact: true }).check();
   if (opts.mealsPerDay) await page.getByLabel("Meals per day").selectOption(opts.mealsPerDay);
   await page.getByRole("button", { name: "Save and continue" }).click();

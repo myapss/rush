@@ -6,6 +6,7 @@ import { requireUser } from "@/lib/auth";
 import { getProfileAndPreferences } from "@/lib/data/profile";
 import { toProfileDefaults } from "@/lib/data/profile-defaults";
 import { countryOptions } from "@/lib/reference";
+import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = { title: "Set up your profile", robots: { index: false, follow: false } };
 
@@ -15,7 +16,7 @@ export default function OnboardingPage() {
       <header className="border-b border-border">
         <div className="container-page flex min-h-16 items-center">
           <Link href="/" className="text-lg font-extrabold">
-            <span aria-hidden>🥗</span> NutriPlan <span className="text-brand">AI</span>
+            <Logo />
           </Link>
         </div>
       </header>

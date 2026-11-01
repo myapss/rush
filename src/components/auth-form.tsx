@@ -50,7 +50,7 @@ export function AuthForm({ mode, next, googleEnabled }: { mode: "login" | "signu
                 <Link href="/privacy" className="underline">
                   Privacy Policy
                 </Link>
-                , and understand NutriPlan AI is not medical advice.
+                , and understand ChopPlanner is not medical advice.
               </span>
             </label>
           </div>

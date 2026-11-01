@@ -4,7 +4,7 @@ import { LegalDraftNotice } from "@/components/legal-draft";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: "The terms that apply when you use NutriPlan AI.",
+  description: "The terms that apply when you use ChopPlanner.",
   alternates: { canonical: "/terms" },
 };
 
@@ -17,7 +17,7 @@ export default function TermsPage() {
       <p>You must be 18 or older to create an account.</p>
       <h2>Not medical advice</h2>
       <p>
-        NutriPlan AI provides general nutrition information and estimates. It is not a substitute for advice from a doctor,
+        ChopPlanner provides general nutrition information and estimates. It is not a substitute for advice from a doctor,
         registered dietitian or other qualified professional. See our <Link href="/nutrition-disclaimer">Nutrition Disclaimer</Link>.
       </p>
       <h2>Allergies</h2>

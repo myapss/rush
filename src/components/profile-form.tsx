@@ -208,7 +208,7 @@ function ProfileFormFields({
             required
             {...err("birthYear")}
           />
-          <span className="hint">NutriPlan AI is for adults 18+.</span>
+          <span className="hint">ChopPlanner is for adults 18+.</span>
           <FieldError state={state} name="birthYear" />
         </label>
       </Section>
@@ -286,7 +286,7 @@ function ProfileFormFields({
         <label className="flex items-start gap-2 rounded-xl border border-border bg-surface-2 p-3 text-sm sm:col-span-2">
           <input type="checkbox" name="healthConsent" defaultChecked={defaults.healthConsent} className="mt-1" {...err("healthConsent")} />
           <span>
-            I consent to NutriPlan AI storing my body measurements and the health information above to personalize my
+            I consent to ChopPlanner storing my body measurements and the health information above to personalize my
             plans. I can withdraw consent at any time in Settings, which deletes this information. See the{" "}
             <Link href="/privacy" className="underline">
               Privacy Policy

@@ -80,7 +80,7 @@ export function onboardingSchema(currentYear: number) {
     .transform((d, ctx) => {
       // All cross-field rules run here so every problem is reported at once.
       if (currentYear - d.birthYear < MIN_AGE) {
-        ctx.addIssue({ code: "custom", path: ["birthYear"], message: "NutriPlan AI is for adults aged 18 and over." });
+        ctx.addIssue({ code: "custom", path: ["birthYear"], message: "ChopPlanner is for adults aged 18 and over." });
       }
       const heightCm =
         d.units === "metric"

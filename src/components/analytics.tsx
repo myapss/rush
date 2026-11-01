@@ -6,6 +6,23 @@ import { useSyncExternalStore } from "react";
 import { readConsent, subscribeConsent, writeConsent, type Consent } from "@/lib/consent";
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+const CF_TOKEN = process.env.NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN;
+const VALID_CF_TOKEN = CF_TOKEN && /^[a-f0-9]{32}$/i.test(CF_TOKEN) ? CF_TOKEN : null;
+
+/**
+ * Cloudflare Web Analytics: cookieless and doesn't track individuals, so it
+ * needs no consent banner. Public pages only, like Google Analytics.
+ */
+export function CloudflareAnalytics() {
+  if (!VALID_CF_TOKEN) return null;
+  return (
+    <Script
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      strategy="afterInteractive"
+      data-cf-beacon={JSON.stringify({ token: VALID_CF_TOKEN })}
+    />
+  );
+}
 const VALID_GA_ID = GA_ID && /^G-[A-Z0-9]{4,20}$/.test(GA_ID) ? GA_ID : null;
 
 /** Server render and first paint: unknown, so neither banner nor scripts render until hydration. */

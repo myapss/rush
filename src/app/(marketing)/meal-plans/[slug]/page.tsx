@@ -6,6 +6,9 @@ import { MEAL_PLAN_BY_SLUG, MEAL_PLAN_PAGES } from "@/content/meal-plans";
 import { siteUrl } from "@/lib/env";
 import { sampleWeek } from "@/lib/library";
 
+// Unknown slugs return a real 404.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return MEAL_PLAN_PAGES.map((p) => ({ slug: p.slug }));
 }
@@ -13,7 +16,7 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: PageProps<"/meal-plans/[slug]">): Promise<Metadata> {
   const p = MEAL_PLAN_BY_SLUG.get((await params).slug);
   if (!p) return {};
-  return { title: { absolute: `${p.metaTitle} | NutriPlan AI` }, description: p.description, alternates: { canonical: `/meal-plans/${p.slug}` } };
+  return { title: { absolute: `${p.metaTitle} | ChopPlanner` }, description: p.description, alternates: { canonical: `/meal-plans/${p.slug}` } };
 }
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];

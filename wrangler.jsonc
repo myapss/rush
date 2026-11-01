@@ -1,0 +1,25 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // ChopPlanner on Cloudflare Workers (built with @opennextjs/cloudflare).
+  "name": "chopplanner",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-15",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    // Self-reference, required by OpenNext caching. Must match "name".
+    { "binding": "WORKER_SELF_REFERENCE", "service": "chopplanner" }
+  ],
+  "r2_buckets": [
+    // Next.js cache. Create once: npx wrangler r2 bucket create chopplanner-opennext-cache
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "chopplanner-opennext-cache" }
+  ],
+  // Serve the site on the apex domain (DNS must be on Cloudflare). www redirects via a Cloudflare Redirect Rule.
+  "routes": [{ "pattern": "chopplanner.com", "custom_domain": true }],
+  "observability": { "enabled": true }
+  // Secrets (never in this file): npx wrangler secret put SUPABASE_SECRET_KEY, ANTHROPIC_API_KEY,
+  // PADDLE_API_KEY, PADDLE_WEBHOOK_SECRET, SENTRY_DSN. See README → Deploying to Cloudflare.
+}

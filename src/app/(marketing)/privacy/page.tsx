@@ -3,7 +3,7 @@ import { LegalDraftNotice } from "@/components/legal-draft";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "How NutriPlan AI collects, uses and protects your personal and health information.",
+  description: "How ChopPlanner collects, uses and protects your personal and health information.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -39,12 +39,16 @@ export default function PrivacyPage() {
           can change your choice with &quot;Cookie settings&quot; in the footer.
         </li>
         <li><strong>Payments:</strong> Paddle sets its own cookies inside the checkout window when you buy Premium.</li>
+        <li>
+          <strong>Cloudflare Web Analytics</strong> counts visits to our public pages without cookies and without identifying
+          you.
+        </li>
       </ul>
       <h2>Service providers</h2>
       <p>We use these providers to run the service. Each receives only what it needs:</p>
       <ul>
         <li><strong>Supabase:</strong> database and sign-in (stores your account, preferences, plans and progress).</li>
-        <li><strong>Vercel:</strong> website hosting.</li>
+        <li><strong>Cloudflare:</strong> website hosting, security and cookieless visit statistics.</li>
         <li><strong>Anthropic:</strong> AI meal planning and recipe ideas. It receives your food preferences, your daily calorie and protein targets, the ingredients and notes you type into the recipe generator, and lists of foods and recipes, but never your name, email, weight, measurements or health conditions.</li>
         <li><strong>Paddle:</strong> our reseller and merchant of record for payments, tax and invoices.</li>
         <li><strong>Sentry:</strong> error monitoring. Reports are stripped of cookies, request contents and personal details.</li>
@@ -69,7 +73,7 @@ export default function PrivacyPage() {
         retention period.
       </p>
       <h2>Age</h2>
-      <p>NutriPlan AI is intended for adults aged 18 and over.</p>
+      <p>ChopPlanner is intended for adults aged 18 and over.</p>
     </article>
   );
 }

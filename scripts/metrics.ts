@@ -26,7 +26,7 @@ async function main() {
   const f = m.funnel;
   const s = m.subscriptions;
   const a = m.ai;
-  console.log(`NutriPlan AI metrics: last ${m.window_days} days (total users: ${m.users_total})
+  console.log(`ChopPlanner metrics: last ${m.window_days} days (total users: ${m.users_total})
 
 Activation funnel (users who signed up in the window)
   Signed up            ${f.signups}

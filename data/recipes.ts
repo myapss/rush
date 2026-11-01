@@ -5,7 +5,7 @@
  * USDA values (see the recipes_derive trigger), along with allergens and the
  * dietary pattern.
  *
- * Status: written by the NutriPlan team, not yet reviewed by a registered
+ * Status: written by the ChopPlanner team, not yet reviewed by a registered
  * dietitian (imported with review_status = 'unreviewed').
  */
 import type { Database } from "../src/lib/supabase/database.types";

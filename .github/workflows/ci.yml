@@ -23,6 +23,8 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
+      - name: Cloudflare Workers build
+        run: npm run cf:build
 
       - name: Start local Supabase
         run: npm run db:start

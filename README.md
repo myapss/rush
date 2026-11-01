@@ -1,8 +1,8 @@
-# NutriPlan AI
+# ChopPlanner
 
-A worldwide, subscription-based diet and meal-planning web app. *NutriPlan AI is a working name.*
+**ChopPlanner** (chopplanner.com) is a worldwide, subscription-based meal-planning web app. *Eat smart, wherever you are.* ("Chop" means "eat" in Nigerian and West African Pidgin.)
 
-Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Postgres, Auth, Row Level Security).
+Built with Next.js 16 (App Router, TypeScript, Tailwind CSS 4) and Supabase (Postgres, Auth, Row Level Security), hosted on Cloudflare Workers.
 
 - Architecture and roadmap: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 - Launch checklist: [`docs/LAUNCH_CHECKLIST.md`](docs/LAUNCH_CHECKLIST.md)
@@ -53,7 +53,7 @@ Run the same commands against your hosted Supabase project (point `.env.local` a
 Paddle is the merchant of record: it charges customers in their local currency, handles VAT and sales tax worldwide, and pays out to the business. It accepts sellers based in Nigeria.
 
 1. Create a **sandbox** account at https://sandbox-vendors.paddle.com.
-2. **Catalog → Products:** create "NutriPlan Premium" with two recurring prices: $9.99 monthly and $59.99 yearly. Copy the `pri_…` IDs into `PADDLE_PRICE_MONTHLY_ID` and `PADDLE_PRICE_YEARLY_ID`.
+2. **Catalog → Products:** create "ChopPlanner Premium" with two recurring prices: $9.99 monthly and $59.99 yearly. Copy the `pri_…` IDs into `PADDLE_PRICE_MONTHLY_ID` and `PADDLE_PRICE_YEARLY_ID`.
 3. **Developer tools → Authentication:** create an API key (`PADDLE_API_KEY`) and a client-side token (`NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`).
 4. **Developer tools → Notifications:** add a destination `https://<your-domain>/api/webhooks/paddle` subscribed to all `subscription.*` events. Copy its secret into `PADDLE_WEBHOOK_SECRET`.
 5. **Checkout → Checkout settings:** set the default payment link to `https://<your-domain>/dashboard/billing`.
@@ -123,6 +123,7 @@ Sign-in emails are captured locally by **Mailpit** at http://127.0.0.1:54324. Op
 | `npm run db:reset` | Recreate the local database from migrations |
 | `npm run db:types` | Regenerate `src/lib/supabase/database.types.ts` after schema changes |
 | `npm run import:foods -- <dir>` / `npm run import:recipes` | Import USDA food data and the curated recipes |
+| `npm run cf:build` / `npm run cf:preview` / `npm run cf:deploy` | Build, preview locally in workerd, or deploy to Cloudflare |
 | `npm run metrics [-- days]` | Business metrics report (aggregate counts only; point `.env.local` at production to run it there) |
 
 ### Database changes
@@ -140,13 +141,41 @@ Add a new file in `supabase/migrations/` (never edit an applied migration), then
 5. **Authentication → SMTP:** configure a real email provider (e.g. Resend or Postmark). Supabase's built-in sender is heavily rate-limited.
 6. Optional Google sign-in: enable the Google provider in Supabase, then set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`.
 
-### Vercel
+### Cloudflare (domain, DNS, hosting, analytics, email, security)
 
-1. Import the GitHub repository in Vercel.
-2. Add the environment variables from `.env.example`: `NEXT_PUBLIC_SITE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY` and `ANTHROPIC_API_KEY` (mark the secrets sensitive). Without `ANTHROPIC_API_KEY`, plans are made by the rules planner.
-3. Deploy, then submit `https://<your-domain>/sitemap.xml` in Google Search Console.
+ChopPlanner runs on **Cloudflare Workers** using the OpenNext adapter (`@opennextjs/cloudflare`). Supabase remains the database and sign-in provider.
 
-**Never commit secrets.** `.env.local` is git-ignored; only `.env.example` (placeholders) is committed.
+1. **Domain:** register `chopplanner.com` with Cloudflare Registrar, or move its nameservers to Cloudflare.
+2. **Login:** run `npx wrangler login` (opens your browser).
+3. **Cache bucket (once):** `npx wrangler r2 bucket create chopplanner-opennext-cache`
+4. **Secrets (server-only, never in files):**
+   ```sh
+   npx wrangler secret put SUPABASE_SECRET_KEY
+   npx wrangler secret put ANTHROPIC_API_KEY
+   npx wrangler secret put PADDLE_API_KEY
+   npx wrangler secret put PADDLE_WEBHOOK_SECRET
+   npx wrangler secret put PADDLE_PRICE_MONTHLY_ID
+   npx wrangler secret put PADDLE_PRICE_YEARLY_ID
+   npx wrangler secret put PADDLE_ENVIRONMENT        # sandbox, then production
+   npx wrangler secret put SENTRY_DSN                # optional
+   ```
+5. **Public build-time values** must exist when building, because Next.js bakes `NEXT_PUBLIC_*` into the site. Put them in `.env.production` locally (git-ignored), or in the build settings if you use Cloudflare's GitHub integration:
+   `NEXT_PUBLIC_SITE_URL=https://chopplanner.com`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_PADDLE_CLIENT_TOKEN`, `NEXT_PUBLIC_CONTACT_EMAIL`, and optionally `NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN` and `NEXT_PUBLIC_SENTRY_DSN`.
+6. **Deploy:** `npm run cf:deploy`. `wrangler.jsonc` attaches the Worker to `chopplanner.com` as a custom domain, and Cloudflare issues the HTTPS certificate automatically.
+7. **Automatic deploys (recommended):** in Cloudflare → Workers & Pages → `chopplanner` → Settings → Builds, connect the GitHub repo `myapss/rush`. Set the build command to `npx opennextjs-cloudflare build`, the deploy command to `npx opennextjs-cloudflare deploy`, and add the `NEXT_PUBLIC_*` values as build variables.
+8. **www → apex:** add a DNS record for `www` (proxied), then a Redirect Rule: `www.chopplanner.com/*` → `https://chopplanner.com/${1}` (301).
+9. **Analytics:** Cloudflare → Web Analytics → add site → copy the token into `NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN`. It's cookieless, so no consent banner is needed. Google Analytics remains optional and consent-gated.
+10. **Email:** Cloudflare Email Routing forwards `hello@chopplanner.com` to your inbox. Sign-in emails are *sent* by Supabase, so configure a sending provider (Resend or Postmark) in Supabase → Auth → SMTP and verify the domain with the DNS records they give you (add them in Cloudflare DNS).
+11. **Security:** Security → WAF → Rate limiting rules: limit `/food-database` and `/api/*` (for example, 60 requests per minute per IP). Turn on Bot Fight Mode.
+12. **Supabase Auth:** set the Site URL to `https://chopplanner.com` and add `https://chopplanner.com/auth/confirm` to the redirect URLs.
+13. **Paddle:** approve `chopplanner.com` as a checkout domain, and point the webhook at `https://chopplanner.com/api/webhooks/paddle`.
+
+**Preview the Worker locally** in Cloudflare's runtime: put the same values in `.dev.vars` (git-ignored; see `.dev.vars.example`), then run `npm run cf:preview`.
+
+Notes:
+- The app uses Next.js's classic caching model. Cache Components (`cacheComponents`) hung requests in the Workers runtime, so it's off.
+- Next 16 runs `proxy.ts` on the Node.js runtime; OpenNext supports this on Cloudflare but labels it experimental. It handles session refresh and redirects, and it was verified in a local workerd run.
+- `global_fetch_strictly_public` blocks requests to private network addresses, so a local preview can't reach a Supabase running on `127.0.0.1`. Point `.dev.vars` at a hosted Supabase project for full local previews.
 
 ## Security model (summary)
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Pricing",
-  description: "NutriPlan AI is free to start. Premium adds more AI meal plans, recipe generations and meal swaps.",
+  description: "ChopPlanner is free to start. Premium adds more AI meal plans, recipe generations and meal swaps.",
   alternates: { canonical: "/pricing" },
 };
 

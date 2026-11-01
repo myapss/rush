@@ -7,7 +7,7 @@ import type { CatalogFood } from "./catalog";
 import { recipeResponseSchema, type Idea } from "./validate";
 
 // Stable instructions (kept byte-identical between requests).
-const SYSTEM = `You are the recipe assistant for NutriPlan AI. You create practical, tasty home recipes.
+const SYSTEM = `You are the recipe assistant for ChopPlanner. You create practical, tasty home recipes.
 
 Rules:
 - Use ONLY ingredients from the provided food list, referring to each by its code (e.g. F12). Water, salt and pepper to taste may appear in the steps without being listed. Never invent other ingredients.

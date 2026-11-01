@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { cacheLife } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { publicEnv } from "@/lib/env";
 import type { Database } from "@/lib/supabase/database.types";
 
@@ -14,9 +14,9 @@ export interface PublicNutrition {
  * Per-serving nutrition for curated recipes, computed in the database from
  * USDA data. Cached for an hour; empty until the USDA import has run.
  */
-export async function getPublicNutrition(): Promise<Record<string, PublicNutrition>> {
-  "use cache";
-  cacheLife("hours");
+export const getPublicNutrition = unstable_cache(loadPublicNutrition, ["public-nutrition"], { revalidate: 3600 });
+
+async function loadPublicNutrition(): Promise<Record<string, PublicNutrition>> {
   const supabase = createClient<Database>(publicEnv.NEXT_PUBLIC_SUPABASE_URL, publicEnv.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY, {
     auth: { persistSession: false },
   });

@@ -1,4 +1,4 @@
-import { Analytics } from "@/components/analytics";
+import { Analytics, CloudflareAnalytics } from "@/components/analytics";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 
@@ -14,6 +14,7 @@ export default function MarketingLayout({ children }: LayoutProps<"/">) {
       </main>
       <SiteFooter />
       <Analytics />
+      <CloudflareAnalytics />
     </>
   );
 }

@@ -1,4 +1,4 @@
-# How NutriPlan AI calculates targets
+# How ChopPlanner calculates targets
 
 All calculations are deterministic code in `src/lib/nutrition/` and are covered by unit tests in `src/lib/nutrition/targets.test.ts`. The AI never produces these numbers.
 

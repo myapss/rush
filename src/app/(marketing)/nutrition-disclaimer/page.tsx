@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Nutrition Disclaimer",
-  description: "Important information about the limits of NutriPlan AI's calorie estimates, meal plans and nutrition data.",
+  description: "Important information about the limits of ChopPlanner's calorie estimates, meal plans and nutrition data.",
   alternates: { canonical: "/nutrition-disclaimer" },
 };
 
@@ -11,7 +11,7 @@ export default function DisclaimerPage() {
     <article className="container-page prose-page max-w-3xl py-12 sm:py-16">
       <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">Nutrition Disclaimer</h1>
       <p>
-        NutriPlan AI provides general information for healthy adults. It is not medical advice and is not intended to
+        ChopPlanner provides general information for healthy adults. It is not medical advice and is not intended to
         diagnose, treat, cure or prevent any disease.
       </p>
       <h2>Estimates, not guarantees</h2>

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
-  title: { default: "Dashboard", template: "%s | NutriPlan AI" },
+  title: { default: "Dashboard", template: "%s | ChopPlanner" },
   robots: { index: false, follow: false },
 };
 
@@ -22,7 +23,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
       <header className="border-b border-border bg-surface print:hidden">
         <div className="container-page flex min-h-16 flex-wrap items-center justify-between gap-3 py-2">
           <Link href="/dashboard" className="text-lg font-extrabold">
-            <span aria-hidden>🥗</span> NutriPlan <span className="text-brand">AI</span>
+            <Logo />
           </Link>
           <nav aria-label="Account" className="-mx-2 flex w-full flex-wrap items-center gap-x-1 text-sm sm:mx-0 sm:w-auto">
             {NAV.map((n) => (

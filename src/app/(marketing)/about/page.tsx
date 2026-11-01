@@ -2,17 +2,23 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "Why we built NutriPlan AI and the principles behind it: sourced nutrition data, safety first, and food from around the world.",
+  description: "Why we built ChopPlanner and the principles behind it: sourced nutrition data, safety first, and food from around the world.",
   alternates: { canonical: "/about" },
 };
 
 export default function AboutPage() {
   return (
     <article className="container-page prose-page max-w-3xl py-12 sm:py-16">
-      <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">About NutriPlan AI</h1>
+      <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-fg sm:text-4xl">About ChopPlanner</h1>
       <p>
-        NutriPlan AI helps people around the world plan practical meals for their goals, using the foods they actually
+        ChopPlanner helps people around the world plan practical meals for their goals, using the foods they actually
         eat, at a budget that works for them.
+      </p>
+      <h2>Why &quot;Chop&quot;?</h2>
+      <p>
+        In Nigerian and West African Pidgin, to <em>chop</em> means to eat. ChopPlanner started with a simple idea: everyone
+        deserves a meal plan built around the food they love, whether that&apos;s jollof and moi moi, dal and rice, or tacos and
+        beans. Eat smart, wherever you are.
       </p>
       <h2>Our principles</h2>
       <ul>

@@ -47,7 +47,7 @@ export function SiteFooter() {
     <footer className="mt-auto border-t border-border bg-surface">
       <div className="container-page grid gap-8 py-10 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr_1fr_1fr]">
         <div className="max-w-sm text-sm text-muted">
-          <p className="mb-2 font-bold text-fg">NutriPlan AI</p>
+          <p className="mb-2 font-bold text-fg">ChopPlanner</p>
           <p>
             General nutrition information for healthy adults, not medical advice. If you are pregnant, have a medical
             condition or a history of disordered eating, talk to a qualified healthcare professional.

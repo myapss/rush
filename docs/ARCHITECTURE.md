@@ -1,4 +1,4 @@
-# NutriPlan AI: Architecture Proposal (Draft for Approval)
+# ChopPlanner: Architecture Proposal (Draft for Approval)
 
 Status: **approved**. All five phases are built. Remaining launch work (accounts, data import, legal and dietitian review) is tracked in `docs/LAUNCH_CHECKLIST.md`.
 
@@ -19,7 +19,7 @@ Status: **approved**. All five phases are built. Remaining launch work (accounts
 ```
 Browser (Next.js RSC + client components, Tailwind)
    │  HTTPS
-Next.js on Vercel ── server actions / route handlers (zod-validated)
+Next.js on Cloudflare Workers (OpenNext) ── server actions / route handlers (zod-validated)
    │        │                 │                   │
    │   Supabase Postgres   Anthropic API     Billing provider
    │   (Auth, RLS,         (server only,     (Paddle or Stripe;
@@ -159,13 +159,13 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 
 ## 5. Accounts and credentials needed (when the phase needs them, not now)
 
-| Service | Values (go in `.env.local` / Vercel env, never in code) | Needed by |
+| Service | Values (go in `.env.local` / Cloudflare secrets, never in code) | Needed by |
 |---|---|---|
 | Supabase | `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | Phase 1 deploy (local dev uses the local stack) |
 | Anthropic | `ANTHROPIC_API_KEY` | Phase 2 |
 | USDA FDC | `FDC_API_KEY` (free via api.data.gov; bulk CSV import needs none) | Phase 2, optional |
 | Paddle **or** Stripe | API key, webhook secret, price IDs | Phase 3 |
-| Vercel | account linked to GitHub repo | first deploy |
+| Cloudflare | account, `chopplanner.com` on Cloudflare DNS, Workers + R2 | first deploy |
 | Email (Resend/Postmark SMTP) | SMTP creds for Supabase Auth emails | before launch (Supabase's default SMTP is rate-limited) |
 | Google | GA4 measurement ID, Search Console verification, OAuth client for Google sign-in | Phase 4 |
 | Sentry (optional) | DSN | Phase 4 |
@@ -176,14 +176,14 @@ RLS is tested with **pgTAP**. For each private table: user A cannot select, upda
 **Decisions needed from you**
 1. **Country of the business / legal entity.** This determines payment provider availability and payouts. *Recommendation:* Paddle (merchant of record handles global VAT/sales tax) if supported for you, otherwise Stripe + Stripe Tax.
 2. **Replace the static site** with the Next.js app? *Recommendation: yes.*
-3. **Product name and domain.** "NutriPlan AI" needs trademark/domain checks.
+3. **Product name and domain.** "ChopPlanner" needs trademark/domain checks.
 4. **Free-tier limits.** *Suggested start:* free = 1 AI plan/month + 3 recipe generations/month; premium = 30 plans + 200 recipes + unlimited swaps (soft cap 300/month).
 5. **Launch cuisines.** *Suggested:* American, British, Nigerian, Indian, Mexican, Mediterranean/Italian, Chinese, Japanese.
 6. **Recipe review.** Will a registered dietitian review the curated library? Strongly recommended before making nutrition claims publicly.
 
 **Risks**
 - **Regional nutrition data licensing:** USDA FDC is public domain (CC0). Other sources need license checks before import: UK CoFID, India IFCT 2017 (NIN, restrictive), and FAO/INFOODS West Africa 2019 for Nigerian foods. Until those are cleared, regional dishes are built from FDC ingredient-level data, with provenance shown.
-- **Health data (GDPR Art. 9 / similar laws):** needs explicit consent, DPAs with Supabase/Vercel/Anthropic, data-region choice (EU vs US Supabase project), retention policy, and legal review. We will not claim compliance without that review.
+- **Health data (GDPR Art. 9 / similar laws):** needs explicit consent, DPAs with Supabase/Cloudflare/Anthropic, data-region choice (EU vs US Supabase project), retention policy, and legal review. We will not claim compliance without that review.
 - **AI cost and latency:** plan generation is the costliest call. Mitigations: small candidate lists, a cheaper model for swaps, cached prompt prefixes, per-call token logging, timeout + deterministic fallback. Real per-plan cost is measured in Phase 2 before pricing is finalized.
 - **Recipe library size** limits plan variety. Curating ~120 good recipes is real content work.
 - **Unit conversion** (cups ↔ grams) depends on FDC portion data, so some ingredients will lack conversions and fall back to grams.

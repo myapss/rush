@@ -1,0 +1,7 @@
+# Values for `npm run cf:preview` (Cloudflare's local runtime). Copy to .dev.vars (git-ignored).
+# Use a hosted Supabase project: the Workers runtime can't reach a database on 127.0.0.1.
+NEXT_PUBLIC_SITE_URL=http://localhost:8787
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+SUPABASE_SECRET_KEY=
+ANTHROPIC_API_KEY=

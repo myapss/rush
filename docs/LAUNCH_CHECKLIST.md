@@ -9,7 +9,7 @@ Work through this before taking real users and payments. ✅ = done in the codeb
 - ☐ Registered dietitian review of the recipe library and safety copy (then set `review_status = 'reviewed'`)
 - ☐ Grow the library toward ~120 recipes, prioritising your launch markets (Nigerian, Indian, American)
 
-## 2. Accounts and configuration (Vercel environment variables)
+## 2. Accounts and configuration (Cloudflare secrets and build variables)
 - ☐ Supabase production project (choose region; EU if you'll serve EU users heavily), migrations pushed (`npx supabase db push`)
 - ☐ Supabase Auth: Site URL, redirect URL `https://<domain>/auth/confirm`, email templates from `supabase/templates/`, custom SMTP (Resend/Postmark)
 - ☐ `pg_cron` enabled (Database → Extensions) so the daily retention job runs
@@ -17,8 +17,11 @@ Work through this before taking real users and payments. ✅ = done in the codeb
 - ☐ Paddle: products/prices, API key, client token, webhook destination, seller verification for your Nigerian business, switch to production values
 - ☐ `SENTRY_DSN` and `NEXT_PUBLIC_SENTRY_DSN` (same value), alerts for new issues
 - ☐ `NEXT_PUBLIC_GA_MEASUREMENT_ID`; in GA, set data retention to 2 months and turn off Google signals
-- ☐ Custom domain + HTTPS (Vercel), `NEXT_PUBLIC_SITE_URL` set to it
-- ☐ Uptime monitor on `https://<domain>/api/health` (e.g. Better Stack, UptimeRobot)
+- ☐ `chopplanner.com` on Cloudflare; Worker deployed with `npm run cf:deploy` (or Cloudflare Builds from GitHub); `NEXT_PUBLIC_SITE_URL=https://chopplanner.com`; www → apex redirect rule
+- ☐ R2 bucket `chopplanner-opennext-cache` created; secrets set with `wrangler secret put`
+- ☐ Cloudflare Web Analytics token set (`NEXT_PUBLIC_CF_WEB_ANALYTICS_TOKEN`)
+- ☐ Cloudflare Email Routing: `hello@chopplanner.com` → your inbox; SMTP sender (Resend/Postmark) verified for chopplanner.com
+- ☐ Uptime monitor on `https://chopplanner.com/api/health` (e.g. Better Stack, UptimeRobot)
 - ☐ Optional: Google sign-in (Supabase provider + `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true`)
 
 ## 3. Legal and compliance
@@ -28,7 +31,7 @@ Work through this before taking real users and payments. ✅ = done in the codeb
 - ✅ Analytics only after opt-in, only on public pages
 - ☐ Lawyer review of privacy policy and terms (GDPR Art. 9 health data, Nigeria's NDPA 2023, UK GDPR, US state laws)
 - ☐ Add a refund policy page (Paddle requires one during verification)
-- ☐ Data processing agreements with Supabase, Vercel, Anthropic, Sentry; publish the sub-processor list
+- ☐ Data processing agreements with Supabase, Cloudflare, Anthropic, Sentry; publish the sub-processor list
 - ☐ Fill in the contact email (`NEXT_PUBLIC_CONTACT_EMAIL`)
 - ☐ Trademark and domain check for the final product name
 
@@ -40,8 +43,8 @@ Work through this before taking real users and payments. ✅ = done in the codeb
 - ✅ Security headers (HSTS, X-Frame-Options, nosniff, Referrer-Policy, Permissions-Policy); private pages `noindex` + `no-store`
 - ✅ Error reports scrubbed of cookies, headers, bodies, query strings and emails
 - ☐ Content-Security-Policy: needs nonces with Next.js, which makes every page dynamic. Decide after launch, or start with `Content-Security-Policy-Report-Only`
-- ☐ Rate-limit or cache the public food-database search at the edge (Vercel Firewall rule)
-- ☐ Enable Supabase leaked-password protection and MFA for your own Supabase, Vercel and Paddle accounts
+- ☐ Cloudflare WAF rate-limiting rule for `/food-database` and `/api/*`; Bot Fight Mode on
+- ☐ Enable Supabase leaked-password protection and MFA for your own Supabase, Cloudflare and Paddle accounts
 
 ## 5. Quality
 - ✅ Unit, database and end-to-end tests run in CI on every push (`.github/workflows/ci.yml`)

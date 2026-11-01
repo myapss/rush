@@ -7,6 +7,10 @@ import { siteUrl } from "@/lib/env";
 import { BY_SLUG, LIBRARY, PATTERN_LABEL } from "@/lib/library";
 import { ALLERGENS } from "@/lib/reference";
 
+// Unknown slugs return a real 404; nutrition refreshes hourly.
+export const dynamicParams = false;
+export const revalidate = 3600;
+
 export function generateStaticParams() {
   return LIBRARY.map((r) => ({ slug: r.slug }));
 }
@@ -132,7 +136,7 @@ export default async function RecipePage({ params }: PageProps<"/recipes/[slug]"
         </section>
       )}
       <p className="mt-8 text-xs text-muted">
-        Recipe by the NutriPlan AI team; not yet reviewed by a registered dietitian. Cook meat, fish and eggs thoroughly.
+        Recipe by the ChopPlanner team; not yet reviewed by a registered dietitian. Cook meat, fish and eggs thoroughly.
       </p>
     </article>
   );

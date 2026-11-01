@@ -8,11 +8,11 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "NutriPlan AI: Personalized meal plans", template: "%s | NutriPlan AI" },
+  title: { default: "ChopPlanner: Eat smart, wherever you are", template: "%s | ChopPlanner" },
   description:
     "Free calorie and macro calculators plus personalized meal planning for your goals, food preferences, allergies, cuisine and budget.",
-  applicationName: "NutriPlan AI",
-  openGraph: { type: "website", siteName: "NutriPlan AI" },
+  applicationName: "ChopPlanner",
+  openGraph: { type: "website", siteName: "ChopPlanner" },
 };
 
 export const viewport: Viewport = {

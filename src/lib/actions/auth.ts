@@ -27,7 +27,7 @@ export async function sendMagicLink(mode: "login" | "signup", _prev: AuthFormSta
 
   if (mode === "signup") {
     if (fd.get("ageConfirmed") !== "on")
-      return { status: "error", message: "NutriPlan AI is for adults. Please confirm you are 18 or older." };
+      return { status: "error", message: "ChopPlanner is for adults. Please confirm you are 18 or older." };
     if (fd.get("termsAccepted") !== "on")
       return { status: "error", message: "Please accept the Terms and Privacy Policy to continue." };
   }

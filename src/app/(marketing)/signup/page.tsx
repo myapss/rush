@@ -6,7 +6,7 @@ import { safeNext } from "@/lib/redirect";
 
 export const metadata: Metadata = {
   title: "Sign up",
-  description: "Create a free NutriPlan AI account to save your preferences and plan meals.",
+  description: "Create a free ChopPlanner account to save your preferences and plan meals.",
   alternates: { canonical: "/signup" },
 };
 
